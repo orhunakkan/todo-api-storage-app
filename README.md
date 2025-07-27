@@ -1,47 +1,102 @@
 # TODO API Storage App
 
-A simple local API application with comprehensive services for testing e2e frameworks.
+A full-stack TODO application with React frontend and Express API backend, featuring comprehensive services for testing frameworks.
 
 ## Features
 
+### Backend API
 - **Todo Management** - Create, read, update, delete todos
 - **User Management** - User registration and management  
 - **Category Management** - Organize todos by categories
 - **Authentication** - JWT-based authentication
 - **Statistics** - Various statistics about todos and users
 - **PostgreSQL Storage** - Persistent local storage
+- **Swagger Documentation** - Interactive API documentation
+
+### Frontend UI
+- **Modern React Interface** - Built with React 18 and Vite
+- **Responsive Design** - Tailwind CSS for styling
+- **Dark/Light Mode** - Theme toggle support
+- **Authentication Flow** - Login, register, and protected routes
+- **Todo Management** - Full CRUD operations with real-time updates
+- **Category Management** - Organize todos by categories
+- **Statistics Dashboard** - Visual overview of todo data
+
+## Quick Start
+
+### Option 1: Full Application (Frontend + Backend)
+```bash
+# Install all dependencies (both backend and frontend)
+npm run install:all
+
+# Start both backend and frontend in development mode
+npm run dev:all
+```
+
+### Option 2: Backend Only
+```bash
+# Install backend dependencies only
+npm install
+
+# Start backend development server
+npm run dev
+```
+
+### Option 3: Frontend Only
+```bash
+# Install frontend dependencies
+npm run install:frontend
+
+# Start frontend development server
+npm run dev:frontend
+```
 
 ## Setup
 
-1. Copy `.env.example` to `.env` and update database credentials:
-   ```
+1. **Environment Configuration**
+   Copy `.env.example` to `.env` and update database credentials:
+   ```bash
    cp .env.example .env
    ```
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Setup database (creates database and tables):
-   ```
+2. **Database Setup**
+   Setup database (creates database and tables):
+   ```bash
    npm run db:setup
    ```
 
-4. Seed database with sample data (optional):
-   ```
+3. **Sample Data (Optional)**
+   Seed database with sample data:
+   ```bash
    npm run db:seed
    ```
 
-5. Start the server:
-   ```
-   npm start
-   ```
+## Available Scripts
 
-   Or for development with auto-restart:
-   ```
-   npm run dev
-   ```
+### Development
+- `npm run dev` - Start backend development server (nodemon)
+- `npm run dev:frontend` - Start frontend development server (Vite)
+- `npm run dev:all` - Start both backend and frontend concurrently
+
+### Production
+- `npm start` - Start backend production server
+- `npm run build` - Build frontend for production
+- `npm run preview` - Preview built frontend
+
+### Database
+- `npm run db:setup` - Create database and tables
+- `npm run db:seed` - Seed database with sample data
+
+### Utilities
+- `npm run lint` - Lint frontend code
+- `npm run install:all` - Install all dependencies (backend + frontend)
+- `npm run clean` - Remove all node_modules and build directories
+
+## Application URLs
+
+- **Backend API**: http://localhost:3000
+- **Frontend UI**: http://localhost:5173 (in development)
+- **API Documentation**: http://localhost:3000/api-docs (Swagger UI)
 
 ## API Endpoints
 

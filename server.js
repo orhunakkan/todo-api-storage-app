@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 const { swaggerUi, specs } = require('./config/swagger');
 require('dotenv').config();
 
@@ -37,6 +38,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Todo API Documentation'
 }));
+
+// Serve static files from React app in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'dist')));
+}
 
 /**
  * @swagger
@@ -172,13 +178,20 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found',
-    message: `The endpoint ${req.method} ${req.originalUrl} does not exist`
+// Serve React app for all non-API routes in production
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
-});
+} else {
+  // 404 handler for development (API-only responses)
+  app.use('*', (req, res) => {
+    res.status(404).json({ 
+      error: 'Route not found',
+      message: `The endpoint ${req.method} ${req.originalUrl} does not exist`
+    });
+  });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {

@@ -5,6 +5,10 @@ yarn-error.log*
 .npm
 .yarn-integrity
 
+# Build output
+dist/
+frontend/dist/
+
 # Environment files
 .env.local
 .env.development.local
