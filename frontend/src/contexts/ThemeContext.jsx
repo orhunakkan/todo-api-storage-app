@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-
+import { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext();
 
 export const useTheme = () => {
@@ -35,8 +34,6 @@ export const ThemeProvider = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>{children}</ThemeContext.Provider>
   );
 };

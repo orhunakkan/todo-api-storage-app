@@ -95,15 +95,15 @@ async function createTables(pool) {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_todos_user_id ON todos(user_id);
   `);
-  
+
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_todos_category_id ON todos(category_id);
   `);
-  
+
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_todos_completed ON todos(completed);
   `);
-  
+
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_todos_priority ON todos(priority);
   `);
@@ -117,7 +117,7 @@ if (require.main === module) {
       console.log('Database setup completed successfully');
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('Database setup failed:', error);
       process.exit(1);
     });

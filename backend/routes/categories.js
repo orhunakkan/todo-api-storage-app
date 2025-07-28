@@ -103,7 +103,7 @@ const router = express.Router();
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    
+
     const result = await pool.query(
       `SELECT c.*, COUNT(t.id) as todo_count
        FROM categories c
@@ -123,8 +123,8 @@ router.get('/', optionalAuth, async (req, res) => {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        has_more: parseInt(offset) + parseInt(limit) < total
-      }
+        has_more: parseInt(offset) + parseInt(limit) < total,
+      },
     });
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -142,10 +142,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Check if category with same name already exists
-    const existing = await pool.query(
-      'SELECT id FROM categories WHERE name = $1',
-      [name]
-    );
+    const existing = await pool.query('SELECT id FROM categories WHERE name = $1', [name]);
 
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'Category with this name already exists' });
@@ -160,7 +157,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     res.status(201).json({
       message: 'Category created successfully',
-      category: result.rows[0]
+      category: result.rows[0],
     });
   } catch (error) {
     console.error('Error creating category:', error);
@@ -202,10 +199,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const { name, description, color } = req.body;
 
     // Check if category exists
-    const existing = await pool.query(
-      'SELECT id FROM categories WHERE id = $1',
-      [id]
-    );
+    const existing = await pool.query('SELECT id FROM categories WHERE id = $1', [id]);
 
     if (existing.rows.length === 0) {
       return res.status(404).json({ error: 'Category not found' });
@@ -213,10 +207,10 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Check if new name already exists (excluding current category)
     if (name) {
-      const nameCheck = await pool.query(
-        'SELECT id FROM categories WHERE name = $1 AND id != $2',
-        [name, id]
-      );
+      const nameCheck = await pool.query('SELECT id FROM categories WHERE name = $1 AND id != $2', [
+        name,
+        id,
+      ]);
 
       if (nameCheck.rows.length > 0) {
         return res.status(409).json({ error: 'Category with this name already exists' });
@@ -259,7 +253,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     res.json({
       message: 'Category updated successfully',
-      category: result.rows[0]
+      category: result.rows[0],
     });
   } catch (error) {
     console.error('Error updating category:', error);
@@ -273,15 +267,9 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     // Check how many todos are using this category
-    const todoCount = await pool.query(
-      'SELECT COUNT(*) FROM todos WHERE category_id = $1',
-      [id]
-    );
+    const todoCount = await pool.query('SELECT COUNT(*) FROM todos WHERE category_id = $1', [id]);
 
-    const result = await pool.query(
-      'DELETE FROM categories WHERE id = $1 RETURNING *',
-      [id]
-    );
+    const result = await pool.query('DELETE FROM categories WHERE id = $1 RETURNING *', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Category not found' });
@@ -290,7 +278,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     res.json({
       message: 'Category deleted successfully',
       deleted_category: result.rows[0],
-      affected_todos: parseInt(todoCount.rows[0].count)
+      affected_todos: parseInt(todoCount.rows[0].count),
     });
   } catch (error) {
     console.error('Error deleting category:', error);
@@ -302,13 +290,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.get('/:id/todos', optionalAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      completed, 
-      priority, 
-      user_id,
-      limit = 50, 
-      offset = 0 
-    } = req.query;
+    const { completed, priority, user_id, limit = 50, offset = 0 } = req.query;
 
     // Build where clause
     const conditions = ['category_id = $1'];
@@ -342,10 +324,7 @@ router.get('/:id/todos', optionalAuth, async (req, res) => {
       [...values, limit, offset]
     );
 
-    const countResult = await pool.query(
-      `SELECT COUNT(*) FROM todos WHERE ${whereClause}`,
-      values
-    );
+    const countResult = await pool.query(`SELECT COUNT(*) FROM todos WHERE ${whereClause}`, values);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
@@ -354,8 +333,8 @@ router.get('/:id/todos', optionalAuth, async (req, res) => {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        has_more: parseInt(offset) + parseInt(limit) < total
-      }
+        has_more: parseInt(offset) + parseInt(limit) < total,
+      },
     });
   } catch (error) {
     console.error('Error fetching category todos:', error);

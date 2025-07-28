@@ -25,8 +25,9 @@ todo-api-storage-app/
 ## Features
 
 ### Backend API (`/backend`)
+
 - **Todo Management** - Create, read, update, delete todos
-- **User Management** - User registration and management  
+- **User Management** - User registration and management
 - **Category Management** - Organize todos by categories
 - **Authentication** - JWT-based authentication
 - **Statistics** - Various statistics about todos and users
@@ -34,6 +35,7 @@ todo-api-storage-app/
 - **Swagger Documentation** - Interactive API documentation
 
 ### Frontend UI (`/frontend`)
+
 - **Modern React Interface** - Built with React 18 and Vite
 - **Responsive Design** - Tailwind CSS for styling
 - **Dark/Light Mode** - Theme toggle support
@@ -45,6 +47,7 @@ todo-api-storage-app/
 ## Quick Start
 
 ### Option 1: Full Application (Frontend + Backend)
+
 ```bash
 # Install all dependencies (both backend and frontend)
 npm run install:all
@@ -54,6 +57,7 @@ npm run dev:all
 ```
 
 ### Option 2: Backend Only
+
 ```bash
 # Install backend dependencies only
 npm run install:backend
@@ -63,6 +67,7 @@ npm run dev:backend
 ```
 
 ### Option 3: Frontend Only
+
 ```bash
 # Install frontend dependencies
 npm run install:frontend
@@ -75,18 +80,21 @@ npm run dev:frontend
 
 1. **Environment Configuration**
    Copy `.env.example` to `.env` in the backend folder and update database credentials:
+
    ```bash
    cp backend/.env.example backend/.env
    ```
 
 2. **Database Setup**
    Setup database (creates database and tables):
+
    ```bash
    npm run db:setup
    ```
 
 3. **Sample Data (Optional)**
    Seed database with sample data (optional):
+
    ```bash
    npm run db:seed
    ```
@@ -100,27 +108,32 @@ npm run dev:frontend
 ## Available Scripts
 
 ### Development
+
 - `npm run dev:backend` - Start backend development server (nodemon)
 - `npm run dev:frontend` - Start frontend development server (Vite)
 - `npm run dev:all` - Start both backend and frontend concurrently
 
 ### Production
+
 - `npm run start:backend` - Start backend production server
 - `npm run start:frontend` - Preview built frontend
 - `npm run build:frontend` - Build frontend for production
 
 ### Installation
+
 - `npm run install:backend` - Install backend dependencies
 - `npm run install:frontend` - Install frontend dependencies
 - `npm run install:all` - Install all dependencies (backend + frontend)
 
 ### Database
+
 - `npm run db:setup` - Create database and tables
 - `npm run db:seed` - Seed database with sample data (optional)
 - `npm run db:clean` - Remove all data and reset ID sequences
 - `npm run db:verify` - Verify current database state
 
 ### Utilities
+
 - `npm run lint:frontend` - Lint frontend code
 - `npm run clean` - Remove all node_modules and build directories
 
@@ -140,31 +153,38 @@ npm run dev:frontend
 - Understand the app's behavior with empty state
 
 ### If you want sample data:
+
 ```bash
 npm run db:seed
 ```
+
 This will add 4 sample users, 6 categories, and 20+ sample todos.
 
 ### To clean the database again:
+
 ```bash
 npm run db:clean
 ```
+
 This removes all data and resets ID sequences to start from 1.
 
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 - `GET /api/auth/profile` - Get user profile (requires auth)
 
 ### Users
+
 - `GET /api/users` - Get all users
 - `GET /api/users/:id` - Get user by ID
 - `PUT /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user
 
 ### Categories
+
 - `GET /api/categories` - Get all categories
 - `POST /api/categories` - Create category
 - `GET /api/categories/:id` - Get category by ID
@@ -172,6 +192,7 @@ This removes all data and resets ID sequences to start from 1.
 - `DELETE /api/categories/:id` - Delete category
 
 ### Todos
+
 - `GET /api/todos` - Get all todos (with filtering)
 - `POST /api/todos` - Create todo
 - `GET /api/todos/:id` - Get todo by ID
@@ -181,6 +202,7 @@ This removes all data and resets ID sequences to start from 1.
 - `PATCH /api/todos/:id/incomplete` - Mark todo as incomplete
 
 ### Statistics
+
 - `GET /api/stats/overview` - General statistics
 - `GET /api/stats/todos` - Todo statistics
 - `GET /api/stats/users` - User statistics
@@ -188,6 +210,7 @@ This removes all data and resets ID sequences to start from 1.
 ## Query Parameters
 
 ### Todos
+
 - `?user_id=123` - Filter by user
 - `?category_id=456` - Filter by category
 - `?completed=true/false` - Filter by completion status

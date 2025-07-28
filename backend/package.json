@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "db:setup": "node scripts/setup-db.js",
     "db:seed": "node scripts/seed-db.js",
     "db:clean": "node scripts/clean-db.js",
@@ -24,7 +26,8 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "prettier": "^3.2.5"
   },
   "keywords": [
     "api",

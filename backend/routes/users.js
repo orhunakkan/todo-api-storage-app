@@ -50,7 +50,7 @@ const router = express.Router();
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    
+
     const result = await pool.query(
       `SELECT id, username, email, first_name, last_name, created_at, updated_at 
        FROM users 
@@ -68,8 +68,8 @@ router.get('/', optionalAuth, async (req, res) => {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        has_more: parseInt(offset) + parseInt(limit) < total
-      }
+        has_more: parseInt(offset) + parseInt(limit) < total,
+      },
     });
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -131,8 +131,8 @@ router.put('/:id', authenticateToken, async (req, res) => {
       );
 
       if (existingUser.rows.length > 0) {
-        return res.status(409).json({ 
-          error: 'Username or email already exists' 
+        return res.status(409).json({
+          error: 'Username or email already exists',
         });
       }
     }
@@ -182,7 +182,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     res.json({
       message: 'User updated successfully',
-      user: result.rows[0]
+      user: result.rows[0],
     });
   } catch (error) {
     console.error('Error updating user:', error);
@@ -201,10 +201,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 
     // Delete user (CASCADE will delete their todos)
-    const result = await pool.query(
-      'DELETE FROM users WHERE id = $1 RETURNING username',
-      [id]
-    );
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING username', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -212,7 +209,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
     res.json({
       message: 'User deleted successfully',
-      deleted_user: result.rows[0].username
+      deleted_user: result.rows[0].username,
     });
   } catch (error) {
     console.error('Error deleting user:', error);
@@ -224,13 +221,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.get('/:id/todos', optionalAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      completed, 
-      priority, 
-      category_id,
-      limit = 50, 
-      offset = 0 
-    } = req.query;
+    const { completed, priority, category_id, limit = 50, offset = 0 } = req.query;
 
     // Build where clause
     const conditions = ['user_id = $1'];
@@ -264,10 +255,7 @@ router.get('/:id/todos', optionalAuth, async (req, res) => {
       [...values, limit, offset]
     );
 
-    const countResult = await pool.query(
-      `SELECT COUNT(*) FROM todos WHERE ${whereClause}`,
-      values
-    );
+    const countResult = await pool.query(`SELECT COUNT(*) FROM todos WHERE ${whereClause}`, values);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
@@ -276,8 +264,8 @@ router.get('/:id/todos', optionalAuth, async (req, res) => {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        has_more: parseInt(offset) + parseInt(limit) < total
-      }
+        has_more: parseInt(offset) + parseInt(limit) < total,
+      },
     });
   } catch (error) {
     console.error('Error fetching user todos:', error);

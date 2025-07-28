@@ -91,7 +91,7 @@ const router = express.Router();
 // Get all todos with filtering and pagination
 router.get('/', optionalAuth, async (req, res) => {
   try {
-    const { 
+    const {
       user_id,
       category_id,
       completed,
@@ -99,10 +99,10 @@ router.get('/', optionalAuth, async (req, res) => {
       due_date_from,
       due_date_to,
       search,
-      limit = 50, 
+      limit = 50,
       offset = 0,
       sort_by = 'created_at',
-      sort_order = 'DESC'
+      sort_order = 'DESC',
     } = req.query;
 
     // Build where clause
@@ -167,10 +167,7 @@ router.get('/', optionalAuth, async (req, res) => {
       [...values, limit, offset]
     );
 
-    const countResult = await pool.query(
-      `SELECT COUNT(*) FROM todos t ${whereClause}`,
-      values
-    );
+    const countResult = await pool.query(`SELECT COUNT(*) FROM todos t ${whereClause}`, values);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
@@ -179,7 +176,7 @@ router.get('/', optionalAuth, async (req, res) => {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        has_more: parseInt(offset) + parseInt(limit) < total
+        has_more: parseInt(offset) + parseInt(limit) < total,
       },
       filters: {
         user_id,
@@ -188,8 +185,8 @@ router.get('/', optionalAuth, async (req, res) => {
         priority,
         due_date_from,
         due_date_to,
-        search
-      }
+        search,
+      },
     });
   } catch (error) {
     console.error('Error fetching todos:', error);
@@ -256,18 +253,17 @@ router.post('/', authenticateToken, async (req, res) => {
     // Validate priority
     const validPriorities = ['low', 'medium', 'high'];
     if (priority && !validPriorities.includes(priority)) {
-      return res.status(400).json({ 
-        error: 'Priority must be one of: low, medium, high' 
+      return res.status(400).json({
+        error: 'Priority must be one of: low, medium, high',
       });
     }
 
     // Validate category exists if provided
     if (category_id) {
-      const categoryCheck = await pool.query(
-        'SELECT id FROM categories WHERE id = $1',
-        [category_id]
-      );
-      
+      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1', [
+        category_id,
+      ]);
+
       if (categoryCheck.rows.length === 0) {
         return res.status(400).json({ error: 'Category not found' });
       }
@@ -294,7 +290,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     res.status(201).json({
       message: 'Todo created successfully',
-      todo: todoResult.rows[0]
+      todo: todoResult.rows[0],
     });
   } catch (error) {
     console.error('Error creating todo:', error);
@@ -493,10 +489,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const { title, description, priority, due_date, category_id, completed } = req.body;
 
     // Check if todo exists and user owns it
-    const todoCheck = await pool.query(
-      'SELECT user_id FROM todos WHERE id = $1',
-      [id]
-    );
+    const todoCheck = await pool.query('SELECT user_id FROM todos WHERE id = $1', [id]);
 
     if (todoCheck.rows.length === 0) {
       return res.status(404).json({ error: 'Todo not found' });
@@ -510,19 +503,18 @@ router.put('/:id', authenticateToken, async (req, res) => {
     if (priority) {
       const validPriorities = ['low', 'medium', 'high'];
       if (!validPriorities.includes(priority)) {
-        return res.status(400).json({ 
-          error: 'Priority must be one of: low, medium, high' 
+        return res.status(400).json({
+          error: 'Priority must be one of: low, medium, high',
         });
       }
     }
 
     // Validate category exists if provided
     if (category_id) {
-      const categoryCheck = await pool.query(
-        'SELECT id FROM categories WHERE id = $1',
-        [category_id]
-      );
-      
+      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1', [
+        category_id,
+      ]);
+
       if (categoryCheck.rows.length === 0) {
         return res.status(400).json({ error: 'Category not found' });
       }
@@ -588,7 +580,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     res.json({
       message: 'Todo updated successfully',
-      todo: todoResult.rows[0]
+      todo: todoResult.rows[0],
     });
   } catch (error) {
     console.error('Error updating todo:', error);
@@ -608,12 +600,14 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Todo not found or you do not have permission to delete it' });
+      return res
+        .status(404)
+        .json({ error: 'Todo not found or you do not have permission to delete it' });
     }
 
     res.json({
       message: 'Todo deleted successfully',
-      deleted_todo: result.rows[0]
+      deleted_todo: result.rows[0],
     });
   } catch (error) {
     console.error('Error deleting todo:', error);
@@ -677,12 +671,14 @@ router.patch('/:id/complete', authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Todo not found or you do not have permission to update it' });
+      return res
+        .status(404)
+        .json({ error: 'Todo not found or you do not have permission to update it' });
     }
 
     res.json({
       message: 'Todo marked as complete',
-      todo: result.rows[0]
+      todo: result.rows[0],
     });
   } catch (error) {
     console.error('Error completing todo:', error);
@@ -746,12 +742,14 @@ router.patch('/:id/incomplete', authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Todo not found or you do not have permission to update it' });
+      return res
+        .status(404)
+        .json({ error: 'Todo not found or you do not have permission to update it' });
     }
 
     res.json({
       message: 'Todo marked as incomplete',
-      todo: result.rows[0]
+      todo: result.rows[0],
     });
   } catch (error) {
     console.error('Error marking todo as incomplete:', error);

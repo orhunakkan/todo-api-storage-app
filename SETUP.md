@@ -7,13 +7,14 @@ This project uses a **separated frontend and backend** structure:
 ```
 todo-api-storage-app/
 ├── frontend/          # React + Vite frontend
-├── backend/           # Express.js API backend  
+├── backend/           # Express.js API backend
 └── package.json       # Workspace manager
 ```
 
 All commands are run from the **root directory** and automatically target the appropriate folder.
 
 ## Prerequisites
+
 - Node.js installed
 - PostgreSQL installed and running
 - PostgreSQL user credentials
@@ -21,32 +22,38 @@ All commands are run from the **root directory** and automatically target the ap
 ## Quick Setup
 
 1. **Update Environment Variables**
+
    ```
    Copy backend/.env.example to backend/.env and update:
    DB_PASSWORD=your_actual_postgres_password
    ```
 
 2. **Install All Dependencies**
+
    ```
    npm run install:all
    ```
 
 3. **Setup Database**
+
    ```
    npm run db:setup
    ```
 
 4. **Clean Database** (Optional)
+
    ```
    npm run db:clean
    ```
 
 5. **Start Both Frontend and Backend**
+
    ```
    npm run dev:all
    ```
-   
+
    Or start individually:
+
    ```
    npm run dev:backend    # Backend only
    npm run dev:frontend   # Frontend only
@@ -57,12 +64,13 @@ All commands are run from the **root directory** and automatically target the ap
 Once running, you can test the endpoints:
 
 ### Register a User
+
 ```bash
 curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "username": "testuser",
-    "email": "test@example.com", 
+    "email": "test@example.com",
     "password": "password123",
     "first_name": "Test",
     "last_name": "User"
@@ -70,6 +78,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 ```
 
 ### Login
+
 ```bash
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -80,6 +89,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 ```
 
 ### Create a Todo (requires JWT token from login)
+
 ```bash
 curl -X POST http://localhost:3000/api/todos \
   -H "Content-Type: application/json" \
@@ -92,11 +102,13 @@ curl -X POST http://localhost:3000/api/todos \
 ```
 
 ### Get All Todos
+
 ```bash
 curl http://localhost:3000/api/todos
 ```
 
 ### Get Statistics
+
 ```bash
 curl http://localhost:3000/api/stats/overview
 ```
@@ -126,18 +138,22 @@ curl http://localhost:3000/api/stats/overview
 - **Clean all data**: Run `npm run db:clean` to remove all data and reset ID sequences
 
 ### Benefits of Clean Database:
+
 - Test user registration and authentication flows
-- Understand empty state UI behavior  
+- Understand empty state UI behavior
 - Create your own meaningful test data
 - Perfect starting point for development
 
 ### If you want sample data:
+
 Running `npm run db:seed` will add:
+
 - 4 sample users (password: "password123")
-- 6 categories 
+- 6 categories
 - 22+ sample todos
 
 Sample users:
+
 - johndoe / john@example.com
 - janedoe / jane@example.com
 - bobsmith / bob@example.com

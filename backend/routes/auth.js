@@ -52,8 +52,8 @@ router.post('/register', async (req, res) => {
 
     // Validate required fields
     if (!username || !email || !password) {
-      return res.status(400).json({ 
-        error: 'Username, email, and password are required' 
+      return res.status(400).json({
+        error: 'Username, email, and password are required',
       });
     }
 
@@ -64,8 +64,8 @@ router.post('/register', async (req, res) => {
     );
 
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ 
-        error: 'Username or email already exists' 
+      return res.status(409).json({
+        error: 'Username or email already exists',
       });
     }
 
@@ -84,11 +84,9 @@ router.post('/register', async (req, res) => {
     const user = result.rows[0];
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, {
+      expiresIn: '24h',
+    });
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -98,9 +96,9 @@ router.post('/register', async (req, res) => {
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
-        created_at: user.created_at
+        created_at: user.created_at,
       },
-      token
+      token,
     });
   } catch (error) {
     console.error('Registration error:', error);
@@ -153,16 +151,15 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ 
-        error: 'Username and password are required' 
+      return res.status(400).json({
+        error: 'Username and password are required',
       });
     }
 
     // Find user by username or email
-    const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1 OR email = $1',
-      [username]
-    );
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $1', [
+      username,
+    ]);
 
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -177,11 +174,9 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, {
+      expiresIn: '24h',
+    });
 
     res.json({
       message: 'Login successful',
@@ -190,9 +185,9 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email: user.email,
         first_name: user.first_name,
-        last_name: user.last_name
+        last_name: user.last_name,
       },
-      token
+      token,
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -235,7 +230,7 @@ router.post('/login', async (req, res) => {
 // Get user profile (requires authentication)
 router.get('/profile', authenticateToken, (req, res) => {
   res.json({
-    user: req.user
+    user: req.user,
   });
 });
 
@@ -288,7 +283,7 @@ router.post('/refresh', authenticateToken, (req, res) => {
 
     res.json({
       message: 'Token refreshed successfully',
-      token
+      token,
     });
   } catch (error) {
     console.error('Token refresh error:', error);

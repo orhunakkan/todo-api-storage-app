@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -24,89 +23,113 @@ axios.defaults.baseURL = 'http://localhost:3000';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
-  
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+
+  return isAuthenticated ? children : <Navigate to='/login' replace />;
 };
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
-  
-  return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
+
+  return !isAuthenticated ? children : <Navigate to='/dashboard' replace />;
 };
 
 const AppContent = () => {
   const { loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className='min-h-screen bg-gray-50 dark:bg-gray-950'>
       <Navbar />
-      <main className="flex-1">
+      <main className='flex-1'>
         <Routes>
           {/* Public routes */}
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } />
-          <Route path="/register" element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
-          } />
-          
+          <Route
+            path='/login'
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+
           {/* Protected routes */}
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/todos" element={
-            <ProtectedRoute>
-              <Todos />
-            </ProtectedRoute>
-          } />
-          <Route path="/todos/:id" element={
-            <ProtectedRoute>
-              <TodoDetail />
-            </ProtectedRoute>
-          } />
-          <Route path="/users" element={
-            <ProtectedRoute>
-              <Users />
-            </ProtectedRoute>
-          } />
-          <Route path="/stats" element={
-            <ProtectedRoute>
-              <Statistics />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          
+          <Route
+            path='/dashboard'
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/todos'
+            element={
+              <ProtectedRoute>
+                <Todos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/todos/:id'
+            element={
+              <ProtectedRoute>
+                <TodoDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/users'
+            element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/stats'
+            element={
+              <ProtectedRoute>
+                <Statistics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/profile'
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Default redirects */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path='/' element={<Navigate to='/dashboard' replace />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </main>
-      
+
       {/* Toast notifications */}
       <Toaster
-        position="top-right"
+        position='top-right'
         toastOptions={{
           duration: 4000,
           style: {

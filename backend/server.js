@@ -33,11 +33,15 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/testing', testingRoutes);
 
 // Swagger Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-  explorer: true,
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Todo API Documentation'
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(specs, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Todo API Documentation',
+  })
+);
 
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
@@ -76,11 +80,11 @@ if (process.env.NODE_ENV === 'production') {
  */
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -119,20 +123,20 @@ app.get('/', (req, res) => {
       auth: {
         register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
-        profile: 'GET /api/auth/profile'
+        profile: 'GET /api/auth/profile',
       },
       users: {
         list: 'GET /api/users',
         get: 'GET /api/users/:id',
         update: 'PUT /api/users/:id',
-        delete: 'DELETE /api/users/:id'
+        delete: 'DELETE /api/users/:id',
       },
       categories: {
         list: 'GET /api/categories',
         create: 'POST /api/categories',
         get: 'GET /api/categories/:id',
         update: 'PUT /api/categories/:id',
-        delete: 'DELETE /api/categories/:id'
+        delete: 'DELETE /api/categories/:id',
       },
       todos: {
         list: 'GET /api/todos',
@@ -141,40 +145,40 @@ app.get('/', (req, res) => {
         update: 'PUT /api/todos/:id',
         delete: 'DELETE /api/todos/:id',
         complete: 'PATCH /api/todos/:id/complete',
-        incomplete: 'PATCH /api/todos/:id/incomplete'
+        incomplete: 'PATCH /api/todos/:id/incomplete',
       },
       stats: {
         overview: 'GET /api/stats/overview',
         todos: 'GET /api/stats/todos',
-        users: 'GET /api/stats/users'
+        users: 'GET /api/stats/users',
       },
       testing: {
         config: 'GET|POST /api/testing/config',
         auth: {
           flakyLogin: 'POST /api/testing/auth/flaky-login',
           shortToken: 'POST /api/testing/auth/short-token',
-          protectedResource: 'GET /api/testing/auth/protected-resource'
+          protectedResource: 'GET /api/testing/auth/protected-resource',
         },
         validation: {
           userProfile: 'POST /api/testing/validation/user-profile',
-          dataTypes: 'POST /api/testing/validation/data-types'
+          dataTypes: 'POST /api/testing/validation/data-types',
         },
         rateLimit: {
           basic: 'GET /api/testing/rate-limit/basic',
-          burst: 'POST /api/testing/rate-limit/burst'
+          burst: 'POST /api/testing/rate-limit/burst',
         },
         network: {
           slowResponse: 'GET /api/testing/network/slow-response',
           randomFailure: 'GET /api/testing/network/random-failure',
-          timeoutTest: 'GET /api/testing/network/timeout-test'
+          timeoutTest: 'GET /api/testing/network/timeout-test',
         },
         pagination: {
           largeDataset: 'GET /api/testing/pagination/large-dataset',
           cursorBased: 'GET /api/testing/pagination/cursor-based',
-          inconsistent: 'GET /api/testing/pagination/inconsistent'
-        }
-      }
-    }
+          inconsistent: 'GET /api/testing/pagination/inconsistent',
+        },
+      },
+    },
   });
 });
 
@@ -186,9 +190,9 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // 404 handler for development (API-only responses)
   app.use('*', (req, res) => {
-    res.status(404).json({ 
+    res.status(404).json({
       error: 'Route not found',
-      message: `The endpoint ${req.method} ${req.originalUrl} does not exist`
+      message: `The endpoint ${req.method} ${req.originalUrl} does not exist`,
     });
   });
 }
@@ -196,14 +200,14 @@ if (process.env.NODE_ENV === 'production') {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  
+
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({ error: 'Invalid JSON in request body' });
   }
-  
+
   res.status(err.status || 500).json({
     error: err.message || 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 });
 
@@ -216,7 +220,7 @@ app.listen(PORT, () => {
   console.log(`📚 Swagger Documentation: http://localhost:${PORT}/api-docs`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
   console.log('=====================================\n');
-  
+
   console.log('🎯 Quick Links (Ctrl+Click to open):');
   console.log(`   • API Documentation: http://localhost:${PORT}/api-docs`);
   console.log(`   • Health Check: http://localhost:${PORT}/health`);

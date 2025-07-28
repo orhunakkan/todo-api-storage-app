@@ -84,7 +84,7 @@ router.get('/overview', optionalAuth, async (req, res) => {
       todos_by_priority: priorityStats.rows,
       recent_activity: recentActivity.rows,
       completion_rates: completionRates.rows,
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Error fetching overview stats:', error);
@@ -125,7 +125,8 @@ router.get('/todos', optionalAuth, async (req, res) => {
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
     // Get basic todo statistics
-    const basicStats = await pool.query(`
+    const basicStats = await pool.query(
+      `
       SELECT 
         COUNT(*) as total,
         COUNT(*) FILTER (WHERE completed = true) as completed,
@@ -138,10 +139,13 @@ router.get('/todos', optionalAuth, async (req, res) => {
           EXTRACT(EPOCH FROM (updated_at - created_at))/3600 
         END) as avg_completion_time_hours
       FROM todos ${whereClause}
-    `, values);
+    `,
+      values
+    );
 
     // Get todos by category
-    const categoryStats = await pool.query(`
+    const categoryStats = await pool.query(
+      `
       SELECT 
         c.name as category_name,
         c.color as category_color,
@@ -153,7 +157,9 @@ router.get('/todos', optionalAuth, async (req, res) => {
       GROUP BY c.id, c.name, c.color
       HAVING COUNT(t.id) > 0
       ORDER BY total_todos DESC
-    `, values);
+    `,
+      values
+    );
 
     // Get completion trends (by month for the last 6 months)
     const trendQuery = `
@@ -173,7 +179,8 @@ router.get('/todos', optionalAuth, async (req, res) => {
     // Get top users (if not filtering by specific user)
     let topUsers = [];
     if (!user_id) {
-      const userStats = await pool.query(`
+      const userStats = await pool.query(
+        `
         SELECT 
           u.username,
           u.first_name,
@@ -190,7 +197,9 @@ router.get('/todos', optionalAuth, async (req, res) => {
         HAVING COUNT(t.id) > 0
         ORDER BY total_todos DESC
         LIMIT 10
-      `, values);
+      `,
+        values
+      );
       topUsers = userStats.rows;
     }
 
@@ -203,9 +212,9 @@ router.get('/todos', optionalAuth, async (req, res) => {
         user_id,
         category_id,
         date_from,
-        date_to
+        date_to,
       },
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Error fetching todo stats:', error);
@@ -280,7 +289,7 @@ router.get('/users', optionalAuth, async (req, res) => {
       user_activity: activityStats.rows,
       registration_trends: registrationTrends.rows,
       most_active_users: mostActiveUsers.rows,
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Error fetching user stats:', error);
@@ -337,7 +346,7 @@ router.get('/categories', optionalAuth, async (req, res) => {
       category_stats: categoryStats.rows,
       uncategorized_todos: uncategorizedCount.rows[0].uncategorized_todos,
       category_trends: categoryTrends.rows,
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Error fetching category stats:', error);

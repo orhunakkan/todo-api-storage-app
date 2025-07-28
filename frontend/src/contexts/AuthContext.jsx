@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -44,15 +44,15 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, [token]);
 
-  const login = async (credentials) => {
+  const login = async credentials => {
     try {
       const response = await axios.post('/api/auth/login', credentials);
       const { token: newToken, user: userData } = response.data;
-      
+
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);
-      
+
       toast.success('Login successful!');
       return { success: true };
     } catch (error) {
@@ -62,15 +62,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (userData) => {
+  const register = async userData => {
     try {
       const response = await axios.post('/api/auth/register', userData);
       const { token: newToken, user: newUser } = response.data;
-      
+
       setToken(newToken);
       setUser(newUser);
       localStorage.setItem('token', newToken);
-      
+
       toast.success('Registration successful!');
       return { success: true };
     } catch (error) {

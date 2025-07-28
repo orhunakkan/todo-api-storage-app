@@ -10,7 +10,7 @@ let testConfig = {
   authFailureRate: 0, // 0-1 (0% to 100%)
   networkDelayMs: 0, // artificial delay in ms
   networkFailureRate: 0, // 0-1 (0% to 100%)
-  validationStrictness: 'normal' // 'normal', 'strict', 'loose'
+  validationStrictness: 'normal', // 'normal', 'strict', 'loose'
 };
 
 /**
@@ -36,12 +36,12 @@ router.get('/config', (req, res) => {
   res.json({
     config: testConfig,
     description: {
-      authFailureRate: "Percentage of auth requests that will fail (0-1)",
-      networkDelayMs: "Artificial delay added to responses (milliseconds)",
-      networkFailureRate: "Percentage of requests that will randomly fail (0-1)",
-      validationStrictness: "Validation level: 'normal', 'strict', 'loose'"
+      authFailureRate: 'Percentage of auth requests that will fail (0-1)',
+      networkDelayMs: 'Artificial delay added to responses (milliseconds)',
+      networkFailureRate: 'Percentage of requests that will randomly fail (0-1)',
+      validationStrictness: "Validation level: 'normal', 'strict', 'loose'",
     },
-    note: "Rate limiting has been disabled for this API"
+    note: 'Rate limiting has been disabled for this API',
   });
 });
 
@@ -80,7 +80,7 @@ router.get('/config', (req, res) => {
 // Update test configuration
 router.post('/config', (req, res) => {
   const updates = req.body;
-  
+
   // Validate and update configuration
   if (updates.authFailureRate !== undefined) {
     testConfig.authFailureRate = Math.max(0, Math.min(1, updates.authFailureRate));
@@ -96,7 +96,7 @@ router.post('/config', (req, res) => {
       testConfig.validationStrictness = updates.validationStrictness;
     }
   }
-  
+
   // Ignore rate limit parameters since rate limiting is disabled
   if (updates.rateLimitWindow !== undefined || updates.rateLimitMax !== undefined) {
     console.log('Rate limiting parameters ignored - rate limiting is disabled');
@@ -105,7 +105,7 @@ router.post('/config', (req, res) => {
   res.json({
     message: 'Test configuration updated successfully',
     config: testConfig,
-    note: 'Rate limiting has been disabled for this API'
+    note: 'Rate limiting has been disabled for this API',
   });
 });
 
@@ -121,7 +121,7 @@ const simulateNetworkIssues = async (req, res, next) => {
     return res.status(503).json({
       error: 'Service temporarily unavailable',
       type: 'network_simulation',
-      retry_after: Math.floor(Math.random() * 5) + 1
+      retry_after: Math.floor(Math.random() * 5) + 1,
     });
   }
 
@@ -172,7 +172,7 @@ router.post('/auth/flaky-login', simulateNetworkIssues, async (req, res) => {
     return res.status(401).json({
       error: 'Authentication failed',
       type: 'auth_simulation',
-      reason: 'Simulated authentication failure'
+      reason: 'Simulated authentication failure',
     });
   }
 
@@ -188,7 +188,7 @@ router.post('/auth/flaky-login', simulateNetworkIssues, async (req, res) => {
       message: 'Login successful',
       token,
       expiresIn: '5 minutes',
-      type: 'test_token'
+      type: 'test_token',
     });
   } else {
     res.status(401).json({ error: 'Invalid credentials' });
@@ -233,7 +233,7 @@ router.post('/auth/short-token', (req, res) => {
     message: 'Short-lived token created',
     token,
     expiresInSeconds: expiry,
-    expiresAt: new Date(Date.now() + expiry * 1000).toISOString()
+    expiresAt: new Date(Date.now() + expiry * 1000).toISOString(),
   });
 });
 
@@ -273,7 +273,7 @@ router.get('/auth/protected-resource', simulateNetworkIssues, (req, res) => {
       return res.status(403).json({
         error: 'Token randomly rejected',
         type: 'auth_simulation',
-        reason: 'Simulated token rejection'
+        reason: 'Simulated token rejection',
       });
     }
 
@@ -281,7 +281,7 @@ router.get('/auth/protected-resource', simulateNetworkIssues, (req, res) => {
       message: 'Access granted to protected resource',
       user: decoded,
       timestamp: new Date().toISOString(),
-      resource: 'sensitive_data_here'
+      resource: 'sensitive_data_here',
     });
   });
 });
@@ -378,7 +378,7 @@ router.post('/validation/user-profile', simulateNetworkIssues, (req, res) => {
       error: 'Validation failed',
       errors,
       strictness: testConfig.validationStrictness,
-      receivedData: { name, email, age, phone, bio }
+      receivedData: { name, email, age, phone, bio },
     });
   }
 
@@ -386,7 +386,7 @@ router.post('/validation/user-profile', simulateNetworkIssues, (req, res) => {
     message: 'Profile validation passed',
     profile: { name, email, age, phone, bio },
     strictness: testConfig.validationStrictness,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -444,7 +444,10 @@ router.post('/validation/data-types', simulateNetworkIssues, (req, res) => {
   if (arrayField !== undefined && !Array.isArray(arrayField)) {
     errors.push('arrayField must be an array');
   }
-  if (objectField !== undefined && (typeof objectField !== 'object' || Array.isArray(objectField) || objectField === null)) {
+  if (
+    objectField !== undefined &&
+    (typeof objectField !== 'object' || Array.isArray(objectField) || objectField === null)
+  ) {
     errors.push('objectField must be an object');
   }
 
@@ -458,15 +461,15 @@ router.post('/validation/data-types', simulateNetworkIssues, (req, res) => {
         booleanField: typeof booleanField,
         dateField: typeof dateField,
         arrayField: Array.isArray(arrayField) ? 'array' : typeof arrayField,
-        objectField: typeof objectField
-      }
+        objectField: typeof objectField,
+      },
     });
   }
 
   res.json({
     message: 'All data types are valid',
     processedData: { stringField, numberField, booleanField, dateField, arrayField, objectField },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -493,7 +496,7 @@ router.get('/rate-limit/basic', simulateNetworkIssues, (req, res) => {
     message: 'Request successful (rate limiting disabled)',
     timestamp: new Date().toISOString(),
     note: 'Rate limiting has been disabled for this API',
-    clientId: req.ip
+    clientId: req.ip,
   });
 });
 
@@ -532,7 +535,7 @@ router.post('/rate-limit/burst', async (req, res) => {
       requestNumber: i + 1,
       status: 200,
       timestamp: new Date().toISOString(),
-      note: 'Rate limiting disabled - all requests succeed'
+      note: 'Rate limiting disabled - all requests succeed',
     });
 
     // Small delay to simulate real requests
@@ -543,7 +546,7 @@ router.post('/rate-limit/burst', async (req, res) => {
     message: 'Burst test completed (rate limiting disabled)',
     totalRequests: maxRequests,
     results,
-    note: 'Rate limiting has been disabled for this API - all requests will succeed'
+    note: 'Rate limiting has been disabled for this API - all requests will succeed',
   });
 });
 
@@ -576,7 +579,7 @@ router.get('/network/slow-response', async (req, res) => {
   const totalDelay = testConfig.networkDelayMs + additionalDelay;
 
   const startTime = Date.now();
-  
+
   if (totalDelay > 0) {
     await new Promise(resolve => setTimeout(resolve, totalDelay));
   }
@@ -587,7 +590,7 @@ router.get('/network/slow-response', async (req, res) => {
     additionalDelay,
     totalDelay,
     actualResponseTime: Date.now() - startTime,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -610,7 +613,7 @@ router.get('/network/random-failure', simulateNetworkIssues, (req, res) => {
     message: 'Network request successful',
     failureRate: testConfig.networkFailureRate,
     timestamp: new Date().toISOString(),
-    lucky: 'You made it through!'
+    lucky: 'You made it through!',
   });
 });
 
@@ -643,15 +646,15 @@ router.get('/network/timeout-test', async (req, res) => {
       await new Promise(resolve => setTimeout(resolve, 5000)); // 5 second delay
       res.json({ message: 'Slow response completed', behavior });
       break;
-    
+
     case 'timeout':
       res.status(408).json({ error: 'Request timeout', behavior });
       break;
-    
+
     case 'hang':
       // Don't respond at all - will cause client timeout
       return;
-    
+
     default: // normal
       res.json({ message: 'Normal response', behavior, timestamp: new Date().toISOString() });
   }
@@ -700,7 +703,7 @@ router.get('/pagination/large-dataset', simulateNetworkIssues, async (req, res) 
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 10));
   const totalRecords = Math.max(0, Math.min(100000, parseInt(req.query.total_records) || 10000));
-  
+
   const offset = (page - 1) * limit;
   const totalPages = Math.ceil(totalRecords / limit);
 
@@ -710,7 +713,7 @@ router.get('/pagination/large-dataset', simulateNetworkIssues, async (req, res) 
       error: 'Page number exceeds total pages',
       page,
       totalPages,
-      totalRecords
+      totalRecords,
     });
   }
 
@@ -729,7 +732,7 @@ router.get('/pagination/large-dataset', simulateNetworkIssues, async (req, res) 
       title: `Test Record ${recordId}`,
       description: `This is test record number ${recordId} of ${totalRecords}`,
       created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      category: ['Work', 'Personal', 'Shopping', 'Health'][recordId % 4]
+      category: ['Work', 'Personal', 'Shopping', 'Health'][recordId % 4],
     });
   }
 
@@ -743,18 +746,24 @@ router.get('/pagination/large-dataset', simulateNetworkIssues, async (req, res) 
       hasNextPage: page < totalPages,
       hasPreviousPage: page > 1,
       nextPage: page < totalPages ? page + 1 : null,
-      previousPage: page > 1 ? page - 1 : null
+      previousPage: page > 1 ? page - 1 : null,
     },
     performance: {
       offset,
       queryDelayMs: delayMs,
-      recordsInPage: data.length
+      recordsInPage: data.length,
     },
     links: {
       self: `/api/testing/pagination/large-dataset?page=${page}&limit=${limit}&total_records=${totalRecords}`,
-      next: page < totalPages ? `/api/testing/pagination/large-dataset?page=${page + 1}&limit=${limit}&total_records=${totalRecords}` : null,
-      prev: page > 1 ? `/api/testing/pagination/large-dataset?page=${page - 1}&limit=${limit}&total_records=${totalRecords}` : null
-    }
+      next:
+        page < totalPages
+          ? `/api/testing/pagination/large-dataset?page=${page + 1}&limit=${limit}&total_records=${totalRecords}`
+          : null,
+      prev:
+        page > 1
+          ? `/api/testing/pagination/large-dataset?page=${page - 1}&limit=${limit}&total_records=${totalRecords}`
+          : null,
+    },
   });
 });
 
@@ -806,25 +815,27 @@ router.get('/pagination/cursor-based', simulateNetworkIssues, (req, res) => {
   // Generate mock data based on cursor
   const data = [];
   const timeIncrement = direction === 'next' ? -60000 : 60000; // 1 minute intervals
-  
+
   for (let i = 0; i < limit; i++) {
-    const recordTimestamp = cursorTimestamp + (timeIncrement * (i + 1));
+    const recordTimestamp = cursorTimestamp + timeIncrement * (i + 1);
     const recordId = Math.abs(Math.floor(recordTimestamp / 1000));
-    
+
     data.push({
       id: recordId,
       title: `Cursor Record ${recordId}`,
       timestamp: recordTimestamp,
       created_at: new Date(recordTimestamp).toISOString(),
-      data: `Record created at ${new Date(recordTimestamp).toISOString()}`
+      data: `Record created at ${new Date(recordTimestamp).toISOString()}`,
     });
   }
 
   // Create next/prev cursors
-  const nextCursor = data.length > 0 ? 
-    Buffer.from(data[data.length - 1].timestamp.toString()).toString('base64') : null;
-  const prevCursor = data.length > 0 ? 
-    Buffer.from(data[0].timestamp.toString()).toString('base64') : null;
+  const nextCursor =
+    data.length > 0
+      ? Buffer.from(data[data.length - 1].timestamp.toString()).toString('base64')
+      : null;
+  const prevCursor =
+    data.length > 0 ? Buffer.from(data[0].timestamp.toString()).toString('base64') : null;
 
   res.json({
     data,
@@ -833,17 +844,21 @@ router.get('/pagination/cursor-based', simulateNetworkIssues, (req, res) => {
       direction,
       hasMore: true, // Simplified - assume there's always more data
       nextCursor: direction === 'next' ? nextCursor : null,
-      prevCursor: direction === 'prev' ? prevCursor : null
+      prevCursor: direction === 'prev' ? prevCursor : null,
     },
     cursors: {
       current: req.query.cursor || null,
       next: nextCursor,
-      prev: prevCursor
+      prev: prevCursor,
     },
     links: {
-      next: nextCursor ? `/api/testing/pagination/cursor-based?cursor=${nextCursor}&limit=${limit}&direction=next` : null,
-      prev: prevCursor ? `/api/testing/pagination/cursor-based?cursor=${prevCursor}&limit=${limit}&direction=prev` : null
-    }
+      next: nextCursor
+        ? `/api/testing/pagination/cursor-based?cursor=${nextCursor}&limit=${limit}&direction=next`
+        : null,
+      prev: prevCursor
+        ? `/api/testing/pagination/cursor-based?cursor=${prevCursor}&limit=${limit}&direction=prev`
+        : null,
+    },
   });
 });
 
@@ -883,17 +898,17 @@ router.get('/pagination/inconsistent', simulateNetworkIssues, (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.max(1, Math.min(20, parseInt(req.query.limit) || 5));
   const issueType = req.query.issue_type || 'none';
-  
+
   const baseData = [];
   const totalRecords = 50;
-  
+
   // Generate base dataset
   for (let i = 1; i <= totalRecords; i++) {
     baseData.push({
       id: i,
       title: `Record ${i}`,
       order: i,
-      created_at: new Date(Date.now() - (totalRecords - i) * 60000).toISOString()
+      created_at: new Date(Date.now() - (totalRecords - i) * 60000).toISOString(),
     });
   }
 
@@ -939,7 +954,7 @@ router.get('/pagination/inconsistent', simulateNetworkIssues, (req, res) => {
       totalRecords,
       totalPages,
       hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1
+      hasPreviousPage: page > 1,
     },
     simulation: {
       issueType,
@@ -947,10 +962,13 @@ router.get('/pagination/inconsistent', simulateNetworkIssues, (req, res) => {
         none: 'Normal pagination behavior',
         duplicates: 'Some records may appear on multiple pages',
         missing_records: 'Some records may be skipped between pages',
-        changing_order: 'Sort order changes between requests'
-      }[issueType]
+        changing_order: 'Sort order changes between requests',
+      }[issueType],
     },
-    warning: issueType !== 'none' ? 'This endpoint simulates pagination issues for testing purposes' : null
+    warning:
+      issueType !== 'none'
+        ? 'This endpoint simulates pagination issues for testing purposes'
+        : null,
   });
 });
 

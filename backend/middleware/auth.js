@@ -68,5 +68,5 @@ function optionalAuth(req, res, next) {
 
 module.exports = {
   authenticateToken,
-  optionalAuth
+  optionalAuth,
 };
