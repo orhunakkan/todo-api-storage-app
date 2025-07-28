@@ -54,5 +54,9 @@ module.exports = {
   // Module name mapping
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/backend/$1'
-  }
+  },
+
+  // Force sequential test execution to avoid database conflicts
+  maxWorkers: 1,
+  runInBand: true
 };

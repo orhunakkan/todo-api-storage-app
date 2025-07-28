@@ -262,14 +262,15 @@ router.post('/', authenticateToken, async (req, res) => {
       });
     }
 
-    // Validate category exists if provided
+    // Validate category exists and belongs to the user if provided
     if (category_id) {
-      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1', [
+      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1 AND user_id = $2', [
         category_id,
+        req.user.id
       ]);
 
       if (categoryCheck.rows.length === 0) {
-        return res.status(400).json({ error: 'Category not found' });
+        return res.status(400).json({ error: 'Category not found or access denied' });
       }
     }
 

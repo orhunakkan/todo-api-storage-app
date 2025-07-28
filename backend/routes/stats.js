@@ -82,14 +82,17 @@ router.get('/overview', authenticateToken, async (req, res) => {
       ORDER BY date DESC
     `, [req.user.id]);
 
-    // Get category breakdown for overview
+    // Get category breakdown for overview (include all user categories and uncategorized todos)
     const categoryBreakdown = await pool.query(`
       SELECT 
         COALESCE(c.name, 'Uncategorized') as category_name,
         COUNT(t.id) as total_todos
-      FROM todos t
-      LEFT JOIN categories c ON t.category_id = c.id
-      WHERE t.user_id = $1
+      FROM (
+        SELECT id, name FROM categories WHERE user_id = $1
+        UNION ALL
+        SELECT NULL as id, 'Uncategorized' as name
+      ) c
+      LEFT JOIN todos t ON t.category_id = c.id AND t.user_id = $1
       GROUP BY c.id, c.name
       ORDER BY total_todos DESC
     `, [req.user.id]);

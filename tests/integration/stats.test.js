@@ -97,7 +97,7 @@ describe('Statistics Routes Integration Tests', () => {
       // Check category breakdown
       expect(stats).toHaveProperty('category_breakdown');
       expect(Array.isArray(stats.category_breakdown)).toBe(true);
-      expect(stats.category_breakdown).toHaveLength(3); // 2 categories + uncategorized
+      expect(stats.category_breakdown).toHaveLength(4); // 3 categories + uncategorized
     });
 
     it('should return zero stats for user with no data', async () => {

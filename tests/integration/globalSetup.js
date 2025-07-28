@@ -3,10 +3,14 @@
  * Prepares test database and environment
  */
 
+const path = require('path');
 const { setupTestDatabase } = require('../../backend/scripts/setup-test-db');
 
 module.exports = async () => {
   console.log('🔧 Setting up integration test environment...');
+  
+  // Load environment variables from backend/.env
+  require('dotenv').config({ path: path.resolve(__dirname, '../../backend/.env') });
   
   try {
     // Ensure test database is properly configured
