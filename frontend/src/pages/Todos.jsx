@@ -158,25 +158,25 @@ const Todos = () => {
   }
 
   return (
-    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid="todos-page">
       {/* Header */}
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8'>
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8' data-testid="todos-header">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>Todos</h1>
-          <p className='mt-2 text-gray-600 dark:text-gray-400'>
+          <h1 className='text-3xl font-bold text-gray-900 dark:text-white' data-testid="todos-title">Todos</h1>
+          <p className='mt-2 text-gray-600 dark:text-gray-400' data-testid="todos-subtitle">
             Manage your tasks and stay organized.
           </p>
         </div>
-        <button onClick={() => setShowModal(true)} className='mt-4 sm:mt-0 btn btn-primary'>
+        <button onClick={() => setShowModal(true)} className='mt-4 sm:mt-0 btn btn-primary' data-testid="todos-create-btn">
           <Plus className='h-4 w-4 mr-2' />
           New Todo
         </button>
       </div>
 
       {/* Filters */}
-      <div className='card p-6 mb-8'>
+      <div className='card p-6 mb-8' data-testid="todos-filters">
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-          <div>
+          <div data-testid="todos-search-field">
             <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
               Search
             </label>
@@ -188,11 +188,12 @@ const Todos = () => {
                 value={filters.search}
                 onChange={e => handleFilterChange('search', e.target.value)}
                 className='input pl-10'
+                data-testid="todos-search-input"
               />
             </div>
           </div>
 
-          <div>
+          <div data-testid="todos-category-filter">
             <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
               Category
             </label>
@@ -200,6 +201,7 @@ const Todos = () => {
               value={filters.category_id}
               onChange={e => handleFilterChange('category_id', e.target.value)}
               className='input'
+              data-testid="todos-category-select"
             >
               <option value=''>All Categories</option>
               {categories.map(category => (
@@ -210,7 +212,7 @@ const Todos = () => {
             </select>
           </div>
 
-          <div>
+          <div data-testid="todos-status-filter">
             <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
               Status
             </label>
@@ -218,6 +220,7 @@ const Todos = () => {
               value={filters.completed}
               onChange={e => handleFilterChange('completed', e.target.value)}
               className='input'
+              data-testid="todos-status-select"
             >
               <option value=''>All Status</option>
               <option value='false'>Pending</option>
@@ -225,7 +228,7 @@ const Todos = () => {
             </select>
           </div>
 
-          <div>
+          <div data-testid="todos-priority-filter">
             <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
               Priority
             </label>
@@ -233,6 +236,7 @@ const Todos = () => {
               value={filters.priority}
               onChange={e => handleFilterChange('priority', e.target.value)}
               className='input'
+              data-testid="todos-priority-select"
             >
               <option value=''>All Priorities</option>
               <option value='high'>High</option>
@@ -273,14 +277,15 @@ const Todos = () => {
         </div>
       ) : (
         <>
-          <div className='space-y-4'>
+          <div className='space-y-4' data-testid="todos-list">
             {todos.map(todo => (
-              <div key={todo.id} className='card p-6'>
+              <div key={todo.id} className='card p-6' data-testid={`todo-item-${todo.id}`}>
                 <div className='flex items-start justify-between'>
                   <div className='flex items-start space-x-4 flex-1'>
                     <button
                       onClick={() => handleToggleComplete(todo.id, todo.completed)}
                       className='mt-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+                      data-testid={`todo-toggle-btn-${todo.id}`}
                     >
                       {todo.completed ? (
                         <CheckSquare className='h-5 w-5 text-green-600' />
@@ -289,37 +294,39 @@ const Todos = () => {
                       )}
                     </button>
 
-                    <div className='flex-1 min-w-0'>
+                    <div className='flex-1 min-w-0' data-testid={`todo-content-${todo.id}`}>
                       <h3
                         className={`text-lg font-medium ${
                           todo.completed
                             ? 'text-gray-500 dark:text-gray-400 line-through'
                             : 'text-gray-900 dark:text-white'
                         }`}
+                        data-testid={`todo-title-${todo.id}`}
                       >
                         {todo.title}
                       </h3>
 
                       {todo.description && (
-                        <p className='mt-1 text-gray-600 dark:text-gray-400'>{todo.description}</p>
+                        <p className='mt-1 text-gray-600 dark:text-gray-400' data-testid={`todo-description-${todo.id}`}>{todo.description}</p>
                       )}
 
-                      <div className='mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400'>
+                      <div className='mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400' data-testid={`todo-metadata-${todo.id}`}>
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(todo.priority)}`}
+                          data-testid={`todo-priority-${todo.id}`}
                         >
                           {todo.priority}
                         </span>
 
                         {todo.category_name && (
-                          <span className='flex items-center'>
+                          <span className='flex items-center' data-testid={`todo-category-${todo.id}`}>
                             <Tag className='h-4 w-4 mr-1' />
                             {todo.category_name}
                           </span>
                         )}
 
                         {todo.due_date && (
-                          <span className='flex items-center'>
+                          <span className='flex items-center' data-testid={`todo-due-date-${todo.id}`}>
                             <Calendar className='h-4 w-4 mr-1' />
                             Due {formatDate(todo.due_date)}
                           </span>
@@ -333,22 +340,25 @@ const Todos = () => {
                     </div>
                   </div>
 
-                  <div className='flex items-center space-x-2 ml-4'>
+                  <div className='flex items-center space-x-2 ml-4' data-testid={`todo-actions-${todo.id}`}>
                     <Link
                       to={`/todos/${todo.id}`}
                       className='p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                      data-testid={`todo-view-btn-${todo.id}`}
                     >
                       <Eye className='h-4 w-4' />
                     </Link>
                     <button
                       onClick={() => handleEdit(todo)}
                       className='p-2 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+                      data-testid={`todo-edit-btn-${todo.id}`}
                     >
                       <Edit className='h-4 w-4' />
                     </button>
                     <button
                       onClick={() => handleDelete(todo)}
                       className='p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400'
+                      data-testid={`todo-delete-btn-${todo.id}`}
                     >
                       <Trash2 className='h-4 w-4' />
                     </button>

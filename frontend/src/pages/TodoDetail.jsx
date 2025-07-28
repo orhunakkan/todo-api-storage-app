@@ -139,28 +139,29 @@ const TodoDetail = () => {
   }
 
   return (
-    <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+    <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid="todo-detail-page">
       {/* Header */}
-      <div className='flex items-center justify-between mb-8'>
+      <div className='flex items-center justify-between mb-8' data-testid="todo-detail-header">
         <div className='flex items-center'>
           <Link
             to='/todos'
             className='p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 mr-4'
+            data-testid="todo-detail-back-btn"
           >
             <ArrowLeft className='h-5 w-5' />
           </Link>
-          <div>
-            <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Todo Details</h1>
-            <p className='text-gray-600 dark:text-gray-400'>View and manage todo information</p>
+          <div data-testid="todo-detail-header-text">
+            <h1 className='text-2xl font-bold text-gray-900 dark:text-white' data-testid="todo-detail-title">Todo Details</h1>
+            <p className='text-gray-600 dark:text-gray-400' data-testid="todo-detail-subtitle">View and manage todo information</p>
           </div>
         </div>
 
-        <div className='flex items-center space-x-3'>
-          <button onClick={() => setShowEditModal(true)} className='btn btn-outline'>
+        <div className='flex items-center space-x-3' data-testid="todo-detail-actions">
+          <button onClick={() => setShowEditModal(true)} className='btn btn-outline' data-testid="todo-detail-edit-btn">
             <Edit className='h-4 w-4 mr-2' />
             Edit
           </button>
-          <button onClick={() => setShowDeleteDialog(true)} className='btn btn-danger'>
+          <button onClick={() => setShowDeleteDialog(true)} className='btn btn-danger' data-testid="todo-detail-delete-btn">
             <Trash2 className='h-4 w-4 mr-2' />
             Delete
           </button>
@@ -168,34 +169,37 @@ const TodoDetail = () => {
       </div>
 
       {/* Todo Card */}
-      <div className='card p-8'>
-        <div className='flex items-start justify-between mb-6'>
+      <div className='card p-8' data-testid="todo-detail-card">
+        <div className='flex items-start justify-between mb-6' data-testid="todo-detail-main">
           <div className='flex items-start space-x-4 flex-1'>
             <button
               onClick={handleToggleComplete}
               className='mt-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+              data-testid="todo-detail-toggle-btn"
             >
               {todo.completed ? (
-                <CheckSquare className='h-6 w-6 text-green-600' />
+                <CheckSquare className='h-6 w-6 text-green-600' data-testid="todo-detail-completed-icon" />
               ) : (
-                <Square className='h-6 w-6' />
+                <Square className='h-6 w-6' data-testid="todo-detail-pending-icon" />
               )}
             </button>
 
-            <div className='flex-1'>
+            <div className='flex-1' data-testid="todo-detail-content">
               <h2
                 className={`text-2xl font-bold mb-2 ${
                   todo.completed
                     ? 'text-gray-500 dark:text-gray-400 line-through'
                     : 'text-gray-900 dark:text-white'
                 }`}
+                data-testid="todo-detail-todo-title"
               >
                 {todo.title}
               </h2>
 
-              <div className='flex items-center space-x-4 mb-4'>
+              <div className='flex items-center space-x-4 mb-4' data-testid="todo-detail-metadata">
                 <span
                   className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(todo.priority)}`}
+                  data-testid="todo-detail-priority"
                 >
                   {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)} Priority
                 </span>

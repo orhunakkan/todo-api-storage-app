@@ -49,9 +49,9 @@ const AppContent = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-950'>
+    <div className='min-h-screen bg-gray-50 dark:bg-gray-950' data-testid="app-container">
       <Navbar />
-      <main className='flex-1'>
+      <main className='flex-1' data-testid="main-content">
         <Routes>
           {/* Public routes */}
           <Route

@@ -78,13 +78,13 @@ const Statistics = () => {
   if (error) {
     return (
       <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
+        <div className='text-center' data-testid="statistics-error-state">
           <AlertCircle className='h-12 w-12 text-red-500 mx-auto mb-4' />
-          <h2 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
+          <h2 className='text-lg font-semibold text-gray-900 dark:text-white mb-2' data-testid="statistics-error-title">
             Error Loading Statistics
           </h2>
-          <p className='text-gray-600 dark:text-gray-400 mb-4'>{error}</p>
-          <button onClick={fetchAllStats} className='btn btn-primary'>
+          <p className='text-gray-600 dark:text-gray-400 mb-4' data-testid="statistics-error-message">{error}</p>
+          <button onClick={fetchAllStats} className='btn btn-primary' data-testid="statistics-error-retry-btn">
             Try Again
           </button>
         </div>
@@ -93,22 +93,22 @@ const Statistics = () => {
   }
 
   return (
-    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid="statistics-page">
       {/* Header */}
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8'>
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8' data-testid="statistics-header">
         <div>
-          <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>Statistics</h1>
-          <p className='mt-2 text-gray-600 dark:text-gray-400'>
+          <h1 className='text-3xl font-bold text-gray-900 dark:text-white' data-testid="statistics-title">Statistics</h1>
+          <p className='mt-2 text-gray-600 dark:text-gray-400' data-testid="statistics-subtitle">
             Analytics and insights about your todo application.
           </p>
         </div>
-        <div className='mt-4 sm:mt-0 flex items-center space-x-4'>
+        <div className='mt-4 sm:mt-0 flex items-center space-x-4' data-testid="statistics-actions">
           {lastUpdated && (
-            <span className='text-sm text-gray-500 dark:text-gray-400'>
+            <span className='text-sm text-gray-500 dark:text-gray-400' data-testid="statistics-last-updated">
               Last updated: {formatDateTime(lastUpdated)}
             </span>
           )}
-          <button onClick={fetchAllStats} className='btn btn-outline' disabled={loading}>
+          <button onClick={fetchAllStats} className='btn btn-outline' disabled={loading} data-testid="statistics-refresh-btn">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
@@ -117,15 +117,15 @@ const Statistics = () => {
 
       {/* Overview Stats */}
       {stats && (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-          <div className='card p-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8' data-testid="statistics-overview-cards">
+          <div className='card p-6' data-testid="statistics-total-todos-card">
             <div className='flex items-center'>
               <div className='p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg'>
                 <CheckSquare className='h-6 w-6 text-blue-600 dark:text-blue-400' />
               </div>
               <div className='ml-4'>
                 <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>Total Todos</p>
-                <p className='text-2xl font-bold text-gray-900 dark:text-white'>
+                <p className='text-2xl font-bold text-gray-900 dark:text-white' data-testid="statistics-total-todos-count">
                   {stats.overview.total_todos}
                 </p>
               </div>
