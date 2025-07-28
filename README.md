@@ -1,10 +1,30 @@
 # TODO API Storage App
 
-A full-stack TODO application with React frontend and Express API backend, featuring comprehensive services for testing frameworks.
+A full-stack TODO application with **separated frontend and backend** folders, featuring comprehensive services for testing frameworks.
+
+## Project Structure
+
+```
+todo-api-storage-app/
+├── frontend/          # React + Vite frontend application
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── ...
+├── backend/           # Express.js API backend
+│   ├── routes/
+│   ├── middleware/
+│   ├── config/
+│   ├── scripts/
+│   ├── package.json
+│   ├── server.js
+│   └── ...
+└── package.json       # Workspace manager
+```
 
 ## Features
 
-### Backend API
+### Backend API (`/backend`)
 - **Todo Management** - Create, read, update, delete todos
 - **User Management** - User registration and management  
 - **Category Management** - Organize todos by categories
@@ -13,7 +33,7 @@ A full-stack TODO application with React frontend and Express API backend, featu
 - **PostgreSQL Storage** - Persistent local storage
 - **Swagger Documentation** - Interactive API documentation
 
-### Frontend UI
+### Frontend UI (`/frontend`)
 - **Modern React Interface** - Built with React 18 and Vite
 - **Responsive Design** - Tailwind CSS for styling
 - **Dark/Light Mode** - Theme toggle support
@@ -36,10 +56,10 @@ npm run dev:all
 ### Option 2: Backend Only
 ```bash
 # Install backend dependencies only
-npm install
+npm run install:backend
 
 # Start backend development server
-npm run dev
+npm run dev:backend
 ```
 
 ### Option 3: Frontend Only
@@ -54,9 +74,9 @@ npm run dev:frontend
 ## Setup
 
 1. **Environment Configuration**
-   Copy `.env.example` to `.env` and update database credentials:
+   Copy `.env.example` to `.env` in the backend folder and update database credentials:
    ```bash
-   cp .env.example .env
+   cp backend/.env.example backend/.env
    ```
 
 2. **Database Setup**
@@ -80,22 +100,28 @@ npm run dev:frontend
 ## Available Scripts
 
 ### Development
-- `npm run dev` - Start backend development server (nodemon)
+- `npm run dev:backend` - Start backend development server (nodemon)
 - `npm run dev:frontend` - Start frontend development server (Vite)
 - `npm run dev:all` - Start both backend and frontend concurrently
 
 ### Production
-- `npm start` - Start backend production server
-- `npm run build` - Build frontend for production
-- `npm run preview` - Preview built frontend
+- `npm run start:backend` - Start backend production server
+- `npm run start:frontend` - Preview built frontend
+- `npm run build:frontend` - Build frontend for production
+
+### Installation
+- `npm run install:backend` - Install backend dependencies
+- `npm run install:frontend` - Install frontend dependencies
+- `npm run install:all` - Install all dependencies (backend + frontend)
 
 ### Database
 - `npm run db:setup` - Create database and tables
 - `npm run db:seed` - Seed database with sample data (optional)
 - `npm run db:clean` - Remove all data and reset ID sequences
+- `npm run db:verify` - Verify current database state
 
 ### Utilities
-- `npm run lint` - Lint frontend code
+- `npm run lint:frontend` - Lint frontend code
 - `npm run clean` - Remove all node_modules and build directories
 
 ## Application URLs

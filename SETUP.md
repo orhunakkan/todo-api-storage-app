@@ -1,5 +1,18 @@
 # Setup Guide
 
+## Project Structure
+
+This project uses a **separated frontend and backend** structure:
+
+```
+todo-api-storage-app/
+├── frontend/          # React + Vite frontend
+├── backend/           # Express.js API backend  
+└── package.json       # Workspace manager
+```
+
+All commands are run from the **root directory** and automatically target the appropriate folder.
+
 ## Prerequisites
 - Node.js installed
 - PostgreSQL installed and running
@@ -9,18 +22,18 @@
 
 1. **Update Environment Variables**
    ```
-   Edit .env file and update:
+   Copy backend/.env.example to backend/.env and update:
    DB_PASSWORD=your_actual_postgres_password
    ```
 
-2. **Setup Database**
+2. **Install All Dependencies**
    ```
-   npm run db:setup
+   npm run install:all
    ```
 
-3. **Seed with Sample Data** (Optional)
+3. **Setup Database**
    ```
-   npm run db:seed
+   npm run db:setup
    ```
 
 4. **Clean Database** (Optional)
@@ -28,14 +41,15 @@
    npm run db:clean
    ```
 
-5. **Start the Server**
+5. **Start Both Frontend and Backend**
    ```
-   npm start
+   npm run dev:all
    ```
    
-   Or for development:
+   Or start individually:
    ```
-   npm run dev
+   npm run dev:backend    # Backend only
+   npm run dev:frontend   # Frontend only
    ```
 
 ## Test the API
