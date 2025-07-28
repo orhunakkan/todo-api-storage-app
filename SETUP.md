@@ -23,7 +23,12 @@
    npm run db:seed
    ```
 
-4. **Start the Server**
+4. **Clean Database** (Optional)
+   ```
+   npm run db:clean
+   ```
+
+5. **Start the Server**
    ```
    npm start
    ```
@@ -98,9 +103,22 @@ curl http://localhost:3000/api/stats/overview
 2. **Permission Denied**: Make sure PostgreSQL service is running
 3. **Port Already in Use**: Change PORT in `.env` file
 
-## Sample Data
+## Database State
 
-If you run `npm run db:seed`, you'll get:
+🧹 **Clean Database**: The database is currently **completely clean** with no pre-seeded data or test data. You can:
+
+- **Start fresh**: The app works perfectly with an empty database
+- **Add sample data**: Run `npm run db:seed` to add sample users, categories, and todos
+- **Clean all data**: Run `npm run db:clean` to remove all data and reset ID sequences
+
+### Benefits of Clean Database:
+- Test user registration and authentication flows
+- Understand empty state UI behavior  
+- Create your own meaningful test data
+- Perfect starting point for development
+
+### If you want sample data:
+Running `npm run db:seed` will add:
 - 4 sample users (password: "password123")
 - 6 categories 
 - 22+ sample todos

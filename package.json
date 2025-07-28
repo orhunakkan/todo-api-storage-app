@@ -15,6 +15,8 @@
     "lint:backend": "echo 'Backend linting not configured'",
     "db:setup": "node scripts/setup-db.js",
     "db:seed": "node scripts/seed-db.js",
+    "db:clean": "node scripts/clean-db.js",
+    "db:verify": "node scripts/verify-db.js",
     "clean": "rmdir /s /q node_modules dist 2>nul || echo Clean completed"
   },
   "dependencies": {

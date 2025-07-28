@@ -66,9 +66,15 @@ npm run dev:frontend
    ```
 
 3. **Sample Data (Optional)**
-   Seed database with sample data:
+   Seed database with sample data (optional):
    ```bash
    npm run db:seed
+   ```
+
+4. **Clean Database (Optional)**
+   Remove all existing data and reset ID sequences:
+   ```bash
+   npm run db:clean
    ```
 
 ## Available Scripts
@@ -85,11 +91,11 @@ npm run dev:frontend
 
 ### Database
 - `npm run db:setup` - Create database and tables
-- `npm run db:seed` - Seed database with sample data
+- `npm run db:seed` - Seed database with sample data (optional)
+- `npm run db:clean` - Remove all data and reset ID sequences
 
 ### Utilities
 - `npm run lint` - Lint frontend code
-- `npm run install:all` - Install all dependencies (backend + frontend)
 - `npm run clean` - Remove all node_modules and build directories
 
 ## Application URLs
@@ -97,6 +103,27 @@ npm run dev:frontend
 - **Backend API**: http://localhost:3000
 - **Frontend UI**: http://localhost:5173 (in development)
 - **API Documentation**: http://localhost:3000/api-docs (Swagger UI)
+
+## Database State
+
+🧹 **Clean Database**: The application currently has a **clean database** with no pre-seeded data. This allows you to:
+
+- Start with a completely fresh application
+- Test registration and authentication flows
+- Create your own users, categories, and todos
+- Understand the app's behavior with empty state
+
+### If you want sample data:
+```bash
+npm run db:seed
+```
+This will add 4 sample users, 6 categories, and 20+ sample todos.
+
+### To clean the database again:
+```bash
+npm run db:clean
+```
+This removes all data and resets ID sequences to start from 1.
 
 ## API Endpoints
 
