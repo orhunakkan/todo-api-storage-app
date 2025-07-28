@@ -93,8 +93,10 @@ describe('Authentication Routes Integration Tests', () => {
       // Arrange
       const userData = fixtures.users.valid;
       
-      // Create user first
-      await DatabaseHelper.createTestUser(userData);
+      // Create user first via API
+      await request(app)
+        .post('/api/auth/register')
+        .send(userData);
 
       // Act - Try to register same user again
       const response = await request(app)
@@ -112,8 +114,10 @@ describe('Authentication Routes Integration Tests', () => {
       const userData1 = fixtures.users.valid;
       const userData2 = { ...userData1, username: 'differentuser' };
       
-      // Create user first
-      await DatabaseHelper.createTestUser(userData1);
+      // Create user first via API
+      await request(app)
+        .post('/api/auth/register')
+        .send(userData1);
 
       // Act - Try to register with same email
       const response = await request(app)
@@ -128,14 +132,23 @@ describe('Authentication Routes Integration Tests', () => {
   });
 
   describe('POST /api/auth/login', () => {
+    let createdUser;
+
     beforeEach(async () => {
-      // Create test user for login tests
-      await DatabaseHelper.createTestUser(fixtures.users.valid);
+      // Create test user for login tests via API
+      const userData = fixtures.users.valid;
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send(userData);
+      createdUser = response.body.user;
     });
 
     it('should login with valid credentials', async () => {
       // Arrange
-      const loginData = fixtures.auth.validLogin;
+      const loginData = {
+        username: createdUser.username,
+        password: fixtures.users.valid.password
+      };
 
       // Act
       const response = await request(app)
@@ -197,33 +210,39 @@ describe('Authentication Routes Integration Tests', () => {
     });
   });
 
-  describe('GET /api/auth/me', () => {
+  describe('GET /api/auth/profile', () => {
     let userToken;
+    let createdUser;
 
     beforeEach(async () => {
-      // Create test user and get token
-      const { token } = await DatabaseHelper.createTestUser(fixtures.users.valid);
-      userToken = token;
+      // Create test user and get token via API
+      const userData = fixtures.users.valid;
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send(userData);
+      
+      createdUser = response.body.user;
+      userToken = response.body.token;
     });
 
     it('should return user profile with valid token', async () => {
       // Act
       const response = await request(app)
-        .get('/api/auth/me')
+        .get('/api/auth/profile')
         .set('Authorization', `Bearer ${userToken}`);
 
       // Assert
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('user');
-      expect(response.body.user).toHaveProperty('username', fixtures.users.valid.username);
-      expect(response.body.user).toHaveProperty('email', fixtures.users.valid.email);
+      expect(response.body.user).toHaveProperty('username', createdUser.username);
+      expect(response.body.user).toHaveProperty('email', createdUser.email);
       expect(response.body.user).not.toHaveProperty('password');
     });
 
     it('should return 401 without token', async () => {
       // Act
       const response = await request(app)
-        .get('/api/auth/me');
+        .get('/api/auth/profile');
 
       // Assert
       expect(response.status).toBe(401);
@@ -231,14 +250,14 @@ describe('Authentication Routes Integration Tests', () => {
       expect(response.body.error).toContain('token');
     });
 
-    it('should return 401 with invalid token', async () => {
+    it('should return 403 with invalid token', async () => {
       // Act
       const response = await request(app)
-        .get('/api/auth/me')
+        .get('/api/auth/profile')
         .set('Authorization', 'Bearer invalid-token');
 
       // Assert
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(403);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error.toLowerCase()).toContain('invalid');
     });

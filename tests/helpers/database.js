@@ -3,21 +3,40 @@
  * Utilities for managing test database operations
  */
 
-const pool = require('../../backend/config/database');
+// Create a test-specific database pool
+const { Pool } = require('pg');
+require('dotenv').config();
+
+// Use test database configuration
+const testPool = new Pool({
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  database: process.env.TEST_DB_NAME || 'todo_test',
+  user: process.env.DB_USER || 'postgres',
+  password: String(process.env.DB_PASSWORD || ''),
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
 class DatabaseHelper {
   /**
    * Clean all test data from database
    */
   static async cleanup() {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       await client.query('BEGIN');
       
       // Delete in correct order to respect foreign key constraints
       await client.query('DELETE FROM todos');
-      await client.query('DELETE FROM categories WHERE user_id IS NOT NULL');
-      await client.query('DELETE FROM users WHERE email LIKE \'%test%\' OR username LIKE \'%test%\'');
+      await client.query('DELETE FROM categories');
+      await client.query('DELETE FROM users');
+      
+      // Reset auto-increment sequences to ensure consistent IDs
+      await client.query('ALTER SEQUENCE users_id_seq RESTART WITH 10');
+      await client.query('ALTER SEQUENCE categories_id_seq RESTART WITH 1');
+      await client.query('ALTER SEQUENCE todos_id_seq RESTART WITH 1');
       
       await client.query('COMMIT');
     } catch (error) {
@@ -35,17 +54,25 @@ class DatabaseHelper {
     const bcrypt = require('bcryptjs');
     const jwt = require('jsonwebtoken');
     
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
+      // Create unique username and email for each test to avoid conflicts
+      const uniqueId = Math.random().toString(36).substr(2, 9);
+      const testUserData = {
+        ...userData,
+        username: `${userData.username}_${uniqueId}`,
+        email: `${uniqueId}_${userData.email}`
+      };
+      
       // Hash password
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const hashedPassword = await bcrypt.hash(testUserData.password, 10);
       
       // Insert user
       const result = await client.query(
         `INSERT INTO users (username, email, password, first_name, last_name)
          VALUES ($1, $2, $3, $4, $5)
          RETURNING id, username, email, first_name, last_name, created_at`,
-        [userData.username, userData.email, hashedPassword, userData.first_name, userData.last_name]
+        [testUserData.username, testUserData.email, hashedPassword, testUserData.first_name, testUserData.last_name]
       );
       
       const user = result.rows[0];
@@ -67,7 +94,7 @@ class DatabaseHelper {
    * Create a test category for a user
    */
   static async createTestCategory(userId, categoryData = global.testCategory) {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       const result = await client.query(
         `INSERT INTO categories (name, description, color, user_id)
@@ -86,13 +113,21 @@ class DatabaseHelper {
    * Create a test todo for a user
    */
   static async createTestTodo(userId, categoryId = null, todoData = global.testTodo) {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       const result = await client.query(
-        `INSERT INTO todos (title, description, priority, due_date, user_id, category_id)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO todos (title, description, priority, due_date, user_id, category_id, completed)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING id, title, description, priority, due_date, completed, user_id, category_id, created_at, updated_at`,
-        [todoData.title, todoData.description, todoData.priority, todoData.due_date, userId, categoryId]
+        [
+          todoData.title, 
+          todoData.description, 
+          todoData.priority, 
+          todoData.due_date, 
+          userId, 
+          categoryId,
+          todoData.completed || false
+        ]
       );
       
       return result.rows[0];
@@ -105,7 +140,7 @@ class DatabaseHelper {
    * Get user by ID
    */
   static async getUserById(userId) {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       const result = await client.query(
         'SELECT id, username, email, first_name, last_name, created_at FROM users WHERE id = $1',
@@ -121,7 +156,7 @@ class DatabaseHelper {
    * Get category by ID
    */
   static async getCategoryById(categoryId) {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       const result = await client.query(
         'SELECT * FROM categories WHERE id = $1',
@@ -137,7 +172,7 @@ class DatabaseHelper {
    * Get todo by ID
    */
   static async getTodoById(todoId) {
-    const client = await pool.connect();
+    const client = await testPool.connect();
     try {
       const result = await client.query(
         'SELECT * FROM todos WHERE id = $1',
@@ -147,6 +182,90 @@ class DatabaseHelper {
     } finally {
       client.release();
     }
+  }
+
+  /**
+   * Get todos by user ID
+   */
+  static async getTodosByUserId(userId) {
+    const client = await testPool.connect();
+    try {
+      const result = await client.query(
+        'SELECT * FROM todos WHERE user_id = $1',
+        [userId]
+      );
+      return result.rows;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Update todo status
+   */
+  static async updateTodoStatus(todoId, completed) {
+    const client = await testPool.connect();
+    try {
+      const result = await client.query(
+        'UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *',
+        [completed, todoId]
+      );
+      return result.rows[0];
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Create test todo with specific date
+   */
+  static async createTestTodoWithDate(userId, categoryId, todoData, date) {
+    const client = await testPool.connect();
+    try {
+      const result = await client.query(
+        `INSERT INTO todos (title, description, priority, due_date, user_id, category_id, created_at, completed)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         RETURNING id, title, description, priority, due_date, completed, user_id, category_id, created_at, updated_at`,
+        [
+          todoData.title,
+          todoData.description || '',
+          todoData.priority || 'medium',
+          todoData.due_date || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          userId,
+          categoryId,
+          date || new Date(),
+          todoData.completed || false
+        ]
+      );
+      
+      return result.rows[0];
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Get a todo by ID
+   */
+  static async getTodoById(todoId) {
+    const client = await testPool.connect();
+    try {
+      const result = await client.query(
+        'SELECT * FROM todos WHERE id = $1',
+        [todoId]
+      );
+      
+      return result.rows[0] || null;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Close database connections
+   */
+  static async closeConnections() {
+    await testPool.end();
   }
 }
 

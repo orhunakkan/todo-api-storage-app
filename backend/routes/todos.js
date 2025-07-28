@@ -110,7 +110,12 @@ router.get('/', optionalAuth, async (req, res) => {
     const values = [];
     let paramCount = 1;
 
-    if (user_id) {
+    // If user is authenticated, automatically filter by their user ID
+    // unless they explicitly provide a different user_id (for admin features)
+    if (req.user && !user_id) {
+      conditions.push(`t.user_id = $${paramCount++}`);
+      values.push(req.user.id);
+    } else if (user_id) {
       conditions.push(`t.user_id = $${paramCount++}`);
       values.push(user_id);
     }
@@ -141,10 +146,9 @@ router.get('/', optionalAuth, async (req, res) => {
     }
 
     if (search) {
-      conditions.push(`(t.title ILIKE $${paramCount++} OR t.description ILIKE $${paramCount})`);
+      conditions.push(`(t.title ILIKE $${paramCount++} OR t.description ILIKE $${paramCount++})`);
       values.push(`%${search}%`);
       values.push(`%${search}%`);
-      paramCount += 2;
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -593,17 +597,23 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if todo exists and user owns it
-    const result = await pool.query(
-      'DELETE FROM todos WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, req.user.id]
-    );
+    // First check if todo exists
+    const todoCheck = await pool.query('SELECT user_id FROM todos WHERE id = $1', [id]);
 
-    if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: 'Todo not found or you do not have permission to delete it' });
+    if (todoCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Todo not found' });
     }
+
+    // Check if user owns the todo
+    if (todoCheck.rows[0].user_id !== req.user.id) {
+      return res.status(403).json({ error: 'You can only delete your own todos' });
+    }
+
+    // Delete the todo
+    const result = await pool.query(
+      'DELETE FROM todos WHERE id = $1 RETURNING *',
+      [id]
+    );
 
     res.json({
       message: 'Todo deleted successfully',

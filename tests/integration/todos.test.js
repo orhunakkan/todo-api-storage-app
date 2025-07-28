@@ -169,17 +169,17 @@ describe('Todos Routes Integration Tests', () => {
       const response = await request(app)
         .get('/api/todos')
         .set('Authorization', `Bearer ${authToken}`)
-        .query({ page: 1, limit: 2 });
+        .query({ limit: 2, offset: 0 });
 
       // Assert
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('todos');
       expect(response.body).toHaveProperty('pagination');
       expect(response.body.todos).toHaveLength(2);
-      expect(response.body.pagination).toHaveProperty('page', 1);
       expect(response.body.pagination).toHaveProperty('limit', 2);
-      expect(response.body.pagination).toHaveProperty('totalCount');
-      expect(response.body.pagination).toHaveProperty('totalPages');
+      expect(response.body.pagination).toHaveProperty('offset', 0);
+      expect(response.body.pagination).toHaveProperty('total');
+      expect(response.body.pagination).toHaveProperty('has_more');
     });
 
     it('should filter todos by completion status', async () => {
