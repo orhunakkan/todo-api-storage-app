@@ -31,28 +31,28 @@ class DatabaseHelper {
     try {
       // Set a shorter lock timeout to fail fast on deadlocks
       await client.query('SET lock_timeout = 5000'); // 5 seconds
-      
+
       await client.query('BEGIN');
-      
+
       // Delete in correct order to respect foreign key constraints
       // Use small delays to reduce lock contention
       await client.query('DELETE FROM todos');
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       await client.query('DELETE FROM categories');
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       await client.query('DELETE FROM users');
-      
+
       // Note: Removed sequence resets to avoid deadlocks in concurrent test execution
       // Auto-increment IDs will continue from where they left off, which is fine for tests
-      
+
       await client.query('COMMIT');
     } catch (error) {
       await client.query('ROLLBACK');
       // Log the error for debugging but don't throw to avoid masking other issues
       console.warn('Database cleanup error:', error.message);
-      
+
       // If it's a deadlock, wait a moment and try once more
       if (error.message.includes('deadlock')) {
         console.log('Retrying cleanup after deadlock...');
@@ -81,7 +81,7 @@ class DatabaseHelper {
   static async createTestUser(userData = global.testUser) {
     const bcrypt = require('bcryptjs');
     const jwt = require('jsonwebtoken');
-    
+
     const client = await testPool.connect();
     try {
       // Create unique username and email for each test to avoid conflicts
@@ -89,12 +89,12 @@ class DatabaseHelper {
       const testUserData = {
         ...userData,
         username: `${userData.username}_${uniqueId}`,
-        email: `${uniqueId}_${userData.email}`
+        email: `${uniqueId}_${userData.email}`,
       };
-      
+
       // Hash password
       const hashedPassword = await bcrypt.hash(testUserData.password, 10);
-      
+
       // Insert user
       const result = await client.query(
         `INSERT INTO users (username, email, password, first_name, last_name)
@@ -102,16 +102,12 @@ class DatabaseHelper {
          RETURNING id, username, email, first_name, last_name, created_at`,
         [testUserData.username, testUserData.email, hashedPassword, testUserData.first_name, testUserData.last_name]
       );
-      
+
       const user = result.rows[0];
-      
+
       // Generate token
-      const token = jwt.sign(
-        { userId: user.id, username: user.username },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
-      
+      const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
       return { user, token };
     } finally {
       client.release();
@@ -130,7 +126,7 @@ class DatabaseHelper {
          RETURNING id, name, description, color, user_id, created_at`,
         [categoryData.name, categoryData.description, categoryData.color, userId]
       );
-      
+
       return result.rows[0];
     } finally {
       client.release();
@@ -147,17 +143,9 @@ class DatabaseHelper {
         `INSERT INTO todos (title, description, priority, due_date, user_id, category_id, completed)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING id, title, description, priority, due_date, completed, user_id, category_id, created_at, updated_at`,
-        [
-          todoData.title, 
-          todoData.description, 
-          todoData.priority, 
-          todoData.due_date, 
-          userId, 
-          categoryId,
-          todoData.completed || false
-        ]
+        [todoData.title, todoData.description, todoData.priority, todoData.due_date, userId, categoryId, todoData.completed || false]
       );
-      
+
       return result.rows[0];
     } finally {
       client.release();
@@ -170,10 +158,7 @@ class DatabaseHelper {
   static async getUserById(userId) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'SELECT id, username, email, first_name, last_name, created_at FROM users WHERE id = $1',
-        [userId]
-      );
+      const result = await client.query('SELECT id, username, email, first_name, last_name, created_at FROM users WHERE id = $1', [userId]);
       return result.rows[0];
     } finally {
       client.release();
@@ -186,10 +171,7 @@ class DatabaseHelper {
   static async getCategoryById(categoryId) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'SELECT * FROM categories WHERE id = $1',
-        [categoryId]
-      );
+      const result = await client.query('SELECT * FROM categories WHERE id = $1', [categoryId]);
       return result.rows[0];
     } finally {
       client.release();
@@ -202,10 +184,7 @@ class DatabaseHelper {
   static async getTodoById(todoId) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'SELECT * FROM todos WHERE id = $1',
-        [todoId]
-      );
+      const result = await client.query('SELECT * FROM todos WHERE id = $1', [todoId]);
       return result.rows[0];
     } finally {
       client.release();
@@ -218,10 +197,7 @@ class DatabaseHelper {
   static async getTodosByUserId(userId) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'SELECT * FROM todos WHERE user_id = $1',
-        [userId]
-      );
+      const result = await client.query('SELECT * FROM todos WHERE user_id = $1', [userId]);
       return result.rows;
     } finally {
       client.release();
@@ -234,10 +210,7 @@ class DatabaseHelper {
   static async updateTodoStatus(todoId, completed) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *',
-        [completed, todoId]
-      );
+      const result = await client.query('UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *', [completed, todoId]);
       return result.rows[0];
     } finally {
       client.release();
@@ -262,10 +235,10 @@ class DatabaseHelper {
           userId,
           categoryId,
           date || new Date(),
-          todoData.completed || false
+          todoData.completed || false,
         ]
       );
-      
+
       return result.rows[0];
     } finally {
       client.release();
@@ -278,11 +251,8 @@ class DatabaseHelper {
   static async getTodoById(todoId) {
     const client = await testPool.connect();
     try {
-      const result = await client.query(
-        'SELECT * FROM todos WHERE id = $1',
-        [todoId]
-      );
-      
+      const result = await client.query('SELECT * FROM todos WHERE id = $1', [todoId]);
+
       return result.rows[0] || null;
     } finally {
       client.release();

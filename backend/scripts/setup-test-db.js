@@ -14,7 +14,7 @@ async function setupTestDatabase() {
   try {
     // Create test database if it doesn't exist
     const testDbName = process.env.TEST_DB_NAME || 'todo_test';
-    
+
     // Drop existing test database if it exists
     try {
       await adminPool.query(`DROP DATABASE IF EXISTS ${testDbName}`);
@@ -22,7 +22,7 @@ async function setupTestDatabase() {
     } catch (error) {
       console.log('No existing test database to drop');
     }
-    
+
     // Create fresh test database
     await adminPool.query(`CREATE DATABASE ${testDbName}`);
     console.log(`Test database ${testDbName} created successfully`);

@@ -14,8 +14,8 @@ describe('Database Configuration', () => {
     jest.doMock('pg', () => ({
       Pool: jest.fn().mockImplementation(() => ({
         on: jest.fn(),
-        query: jest.fn()
-      }))
+        query: jest.fn(),
+      })),
     }));
 
     // Just verify we can import the config without errors

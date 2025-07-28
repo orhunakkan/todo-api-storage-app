@@ -85,34 +85,40 @@ const TodoModal = ({ todo, categories, onClose }) => {
   };
 
   return (
-    <div className='fixed inset-0 z-50 overflow-y-auto' data-testid="todo-modal">
+    <div className='fixed inset-0 z-50 overflow-y-auto' data-testid='todo-modal'>
       <div className='flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0'>
         {/* Backdrop */}
         <div
           className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75'
           onClick={onClose}
-          data-testid="todo-modal-backdrop"
+          data-testid='todo-modal-backdrop'
         />
 
         {/* Modal */}
-        <div className='relative inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-900 shadow-xl rounded-xl' data-testid="todo-modal-content">
+        <div
+          className='relative inline-block w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-900 shadow-xl rounded-xl'
+          data-testid='todo-modal-content'
+        >
           {/* Header */}
-          <div className='flex items-center justify-between mb-6' data-testid="todo-modal-header">
-            <h3 className='text-lg font-medium text-gray-900 dark:text-white' data-testid="todo-modal-title">
+          <div className='flex items-center justify-between mb-6' data-testid='todo-modal-header'>
+            <h3 className='text-lg font-medium text-gray-900 dark:text-white' data-testid='todo-modal-title'>
               {todo ? 'Edit Todo' : 'Create New Todo'}
             </h3>
             <button
               onClick={onClose}
               className='p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800'
-              data-testid="todo-modal-close-btn"
+              data-testid='todo-modal-close-btn'
             >
               <X className='h-5 w-5' />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className='space-y-6' data-testid="todo-modal-form">
+          <form onSubmit={handleSubmit} className='space-y-6' data-testid='todo-modal-form'>
             {errors.submit && (
-              <div className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50' data-testid="todo-modal-error">
+              <div
+                className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50'
+                data-testid='todo-modal-error'
+              >
                 <div className='flex'>
                   <AlertCircle className='h-5 w-5 text-red-400 mr-2 mt-0.5' />
                   <p className='text-sm text-red-600 dark:text-red-400'>{errors.submit}</p>
@@ -121,12 +127,8 @@ const TodoModal = ({ todo, categories, onClose }) => {
             )}
 
             {/* Title */}
-            <div data-testid="todo-modal-title-field">
-              <label
-                htmlFor='title'
-                className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                data-testid="todo-modal-title-label"
-              >
+            <div data-testid='todo-modal-title-field'>
+              <label htmlFor='title' className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2' data-testid='todo-modal-title-label'>
                 Title *
               </label>
               <input
@@ -138,19 +140,21 @@ const TodoModal = ({ todo, categories, onClose }) => {
                 onChange={handleChange}
                 className={`input ${errors.title ? 'border-red-500 focus:ring-red-500' : ''}`}
                 placeholder='Enter todo title'
-                data-testid="todo-modal-title-input"
+                data-testid='todo-modal-title-input'
               />
               {errors.title && (
-                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid="todo-modal-title-error">{errors.title}</p>
+                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid='todo-modal-title-error'>
+                  {errors.title}
+                </p>
               )}
             </div>
 
             {/* Description */}
-            <div data-testid="todo-modal-description-field">
+            <div data-testid='todo-modal-description-field'>
               <label
                 htmlFor='description'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                data-testid="todo-modal-description-label"
+                data-testid='todo-modal-description-label'
               >
                 Description
               </label>
@@ -162,17 +166,17 @@ const TodoModal = ({ todo, categories, onClose }) => {
                 onChange={handleChange}
                 className='input resize-none'
                 placeholder='Enter todo description (optional)'
-                data-testid="todo-modal-description-input"
+                data-testid='todo-modal-description-input'
               />
             </div>
 
             {/* Priority and Category */}
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4' data-testid="todo-modal-priority-category-fields">
-              <div data-testid="todo-modal-priority-field">
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4' data-testid='todo-modal-priority-category-fields'>
+              <div data-testid='todo-modal-priority-field'>
                 <label
                   htmlFor='priority'
                   className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                  data-testid="todo-modal-priority-label"
+                  data-testid='todo-modal-priority-label'
                 >
                   Priority
                 </label>
@@ -182,7 +186,7 @@ const TodoModal = ({ todo, categories, onClose }) => {
                   value={formData.priority}
                   onChange={handleChange}
                   className='input'
-                  data-testid="todo-modal-priority-select"
+                  data-testid='todo-modal-priority-select'
                 >
                   <option value='low'>Low</option>
                   <option value='medium'>Medium</option>
@@ -190,11 +194,11 @@ const TodoModal = ({ todo, categories, onClose }) => {
                 </select>
               </div>
 
-              <div data-testid="todo-modal-category-field">
+              <div data-testid='todo-modal-category-field'>
                 <label
                   htmlFor='category_id'
                   className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                  data-testid="todo-modal-category-label"
+                  data-testid='todo-modal-category-label'
                 >
                   Category
                 </label>
@@ -204,7 +208,7 @@ const TodoModal = ({ todo, categories, onClose }) => {
                   value={formData.category_id}
                   onChange={handleChange}
                   className='input'
-                  data-testid="todo-modal-category-select"
+                  data-testid='todo-modal-category-select'
                 >
                   <option value=''>No Category</option>
                   {categories.map(category => (
@@ -217,11 +221,11 @@ const TodoModal = ({ todo, categories, onClose }) => {
             </div>
 
             {/* Due Date */}
-            <div data-testid="todo-modal-due-date-field">
+            <div data-testid='todo-modal-due-date-field'>
               <label
                 htmlFor='due_date'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                data-testid="todo-modal-due-date-label"
+                data-testid='todo-modal-due-date-label'
               >
                 Due Date
               </label>
@@ -234,36 +238,27 @@ const TodoModal = ({ todo, categories, onClose }) => {
                   onChange={handleChange}
                   className='input pr-10'
                   min={new Date().toISOString().split('T')[0]}
-                  data-testid="todo-modal-due-date-input"
+                  data-testid='todo-modal-due-date-input'
                 />
-                <Calendar className='absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none' data-testid="todo-modal-due-date-icon" />
+                <Calendar
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none'
+                  data-testid='todo-modal-due-date-icon'
+                />
               </div>
             </div>
 
             {/* Actions */}
-            <div className='flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700' data-testid="todo-modal-actions">
-              <button
-                type='button'
-                onClick={onClose}
-                className='btn btn-outline'
-                disabled={loading}
-                data-testid="todo-modal-cancel-btn"
-              >
+            <div className='flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700' data-testid='todo-modal-actions'>
+              <button type='button' onClick={onClose} className='btn btn-outline' disabled={loading} data-testid='todo-modal-cancel-btn'>
                 Cancel
               </button>
               <button
                 type='submit'
                 disabled={loading}
                 className='btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed'
-                data-testid="todo-modal-submit-btn"
+                data-testid='todo-modal-submit-btn'
               >
-                {loading ? (
-                  <LoadingSpinner size='small' text='' />
-                ) : todo ? (
-                  'Update Todo'
-                ) : (
-                  'Create Todo'
-                )}
+                {loading ? <LoadingSpinner size='small' text='' /> : todo ? 'Update Todo' : 'Create Todo'}
               </button>
             </div>
           </form>

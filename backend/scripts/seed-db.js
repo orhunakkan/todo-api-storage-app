@@ -61,10 +61,11 @@ async function seedDatabase() {
 
     const categoryIds = [];
     for (const category of categories) {
-      const result = await pool.query(
-        'INSERT INTO categories (name, description, color) VALUES ($1, $2, $3) RETURNING id',
-        [category.name, category.description, category.color]
-      );
+      const result = await pool.query('INSERT INTO categories (name, description, color) VALUES ($1, $2, $3) RETURNING id', [
+        category.name,
+        category.description,
+        category.color,
+      ]);
       categoryIds.push(result.rows[0].id);
       console.log(`Created category: ${category.name}`);
     }
@@ -265,24 +266,13 @@ async function seedDatabase() {
       await pool.query(
         `INSERT INTO todos (title, description, priority, due_date, user_id, category_id, completed, created_at, updated_at) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8)`,
-        [
-          todo.title,
-          todo.description,
-          todo.priority,
-          dueDate,
-          todo.user_id,
-          todo.category_id,
-          todo.completed || false,
-          createdAt,
-        ]
+        [todo.title, todo.description, todo.priority, dueDate, todo.user_id, todo.category_id, todo.completed || false, createdAt]
       );
       console.log(`Created todo: ${todo.title}`);
     }
 
     console.log('Database seeding completed successfully!');
-    console.log(
-      `Created ${users.length} users, ${categories.length} categories, and ${todos.length} todos`
-    );
+    console.log(`Created ${users.length} users, ${categories.length} categories, and ${todos.length} todos`);
   } catch (error) {
     console.error('Error seeding database:', error);
     throw error;

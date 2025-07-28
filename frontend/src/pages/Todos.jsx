@@ -1,19 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import {
-  Plus,
-  Search,
-  CheckSquare,
-  Square,
-  Calendar,
-  User,
-  Tag,
-  Edit,
-  Trash2,
-  Eye,
-  AlertCircle,
-} from 'lucide-react';
+import { Plus, Search, CheckSquare, Square, Calendar, User, Tag, Edit, Trash2, Eye, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TodoModal from '../components/TodoModal';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -158,28 +146,28 @@ const Todos = () => {
   }
 
   return (
-    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid="todos-page">
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid='todos-page'>
       {/* Header */}
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8' data-testid="todos-header">
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8' data-testid='todos-header'>
         <div>
-          <h1 className='text-3xl font-bold text-gray-900 dark:text-white' data-testid="todos-title">Todos</h1>
-          <p className='mt-2 text-gray-600 dark:text-gray-400' data-testid="todos-subtitle">
+          <h1 className='text-3xl font-bold text-gray-900 dark:text-white' data-testid='todos-title'>
+            Todos
+          </h1>
+          <p className='mt-2 text-gray-600 dark:text-gray-400' data-testid='todos-subtitle'>
             Manage your tasks and stay organized.
           </p>
         </div>
-        <button onClick={() => setShowModal(true)} className='mt-4 sm:mt-0 btn btn-primary' data-testid="todos-create-btn">
+        <button onClick={() => setShowModal(true)} className='mt-4 sm:mt-0 btn btn-primary' data-testid='todos-create-btn'>
           <Plus className='h-4 w-4 mr-2' />
           New Todo
         </button>
       </div>
 
       {/* Filters */}
-      <div className='card p-6 mb-8' data-testid="todos-filters">
+      <div className='card p-6 mb-8' data-testid='todos-filters'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-          <div data-testid="todos-search-field">
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-              Search
-            </label>
+          <div data-testid='todos-search-field'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Search</label>
             <div className='relative'>
               <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
               <input
@@ -188,20 +176,18 @@ const Todos = () => {
                 value={filters.search}
                 onChange={e => handleFilterChange('search', e.target.value)}
                 className='input pl-10'
-                data-testid="todos-search-input"
+                data-testid='todos-search-input'
               />
             </div>
           </div>
 
-          <div data-testid="todos-category-filter">
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-              Category
-            </label>
+          <div data-testid='todos-category-filter'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Category</label>
             <select
               value={filters.category_id}
               onChange={e => handleFilterChange('category_id', e.target.value)}
               className='input'
-              data-testid="todos-category-select"
+              data-testid='todos-category-select'
             >
               <option value=''>All Categories</option>
               {categories.map(category => (
@@ -212,15 +198,13 @@ const Todos = () => {
             </select>
           </div>
 
-          <div data-testid="todos-status-filter">
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-              Status
-            </label>
+          <div data-testid='todos-status-filter'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Status</label>
             <select
               value={filters.completed}
               onChange={e => handleFilterChange('completed', e.target.value)}
               className='input'
-              data-testid="todos-status-select"
+              data-testid='todos-status-select'
             >
               <option value=''>All Status</option>
               <option value='false'>Pending</option>
@@ -228,15 +212,13 @@ const Todos = () => {
             </select>
           </div>
 
-          <div data-testid="todos-priority-filter">
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-              Priority
-            </label>
+          <div data-testid='todos-priority-filter'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>Priority</label>
             <select
               value={filters.priority}
               onChange={e => handleFilterChange('priority', e.target.value)}
               className='input'
-              data-testid="todos-priority-select"
+              data-testid='todos-priority-select'
             >
               <option value=''>All Priorities</option>
               <option value='high'>High</option>
@@ -251,9 +233,7 @@ const Todos = () => {
       {error ? (
         <div className='text-center py-8'>
           <AlertCircle className='h-12 w-12 text-red-500 mx-auto mb-4' />
-          <h2 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
-            Error Loading Todos
-          </h2>
+          <h2 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>Error Loading Todos</h2>
           <p className='text-gray-600 dark:text-gray-400 mb-4'>{error}</p>
           <button onClick={fetchTodos} className='btn btn-primary'>
             Try Again
@@ -262,9 +242,7 @@ const Todos = () => {
       ) : todos.length === 0 ? (
         <div className='text-center py-12'>
           <CheckSquare className='h-16 w-16 text-gray-400 mx-auto mb-4' />
-          <h2 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>
-            No todos found
-          </h2>
+          <h2 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>No todos found</h2>
           <p className='text-gray-600 dark:text-gray-400 mb-6'>
             {Object.values(filters).some(value => value !== '')
               ? 'Try adjusting your filters or create a new todo.'
@@ -277,7 +255,7 @@ const Todos = () => {
         </div>
       ) : (
         <>
-          <div className='space-y-4' data-testid="todos-list">
+          <div className='space-y-4' data-testid='todos-list'>
             {todos.map(todo => (
               <div key={todo.id} className='card p-6' data-testid={`todo-item-${todo.id}`}>
                 <div className='flex items-start justify-between'>
@@ -287,19 +265,13 @@ const Todos = () => {
                       className='mt-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
                       data-testid={`todo-toggle-btn-${todo.id}`}
                     >
-                      {todo.completed ? (
-                        <CheckSquare className='h-5 w-5 text-green-600' />
-                      ) : (
-                        <Square className='h-5 w-5' />
-                      )}
+                      {todo.completed ? <CheckSquare className='h-5 w-5 text-green-600' /> : <Square className='h-5 w-5' />}
                     </button>
 
                     <div className='flex-1 min-w-0' data-testid={`todo-content-${todo.id}`}>
                       <h3
                         className={`text-lg font-medium ${
-                          todo.completed
-                            ? 'text-gray-500 dark:text-gray-400 line-through'
-                            : 'text-gray-900 dark:text-white'
+                          todo.completed ? 'text-gray-500 dark:text-gray-400 line-through' : 'text-gray-900 dark:text-white'
                         }`}
                         data-testid={`todo-title-${todo.id}`}
                       >
@@ -307,10 +279,15 @@ const Todos = () => {
                       </h3>
 
                       {todo.description && (
-                        <p className='mt-1 text-gray-600 dark:text-gray-400' data-testid={`todo-description-${todo.id}`}>{todo.description}</p>
+                        <p className='mt-1 text-gray-600 dark:text-gray-400' data-testid={`todo-description-${todo.id}`}>
+                          {todo.description}
+                        </p>
                       )}
 
-                      <div className='mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400' data-testid={`todo-metadata-${todo.id}`}>
+                      <div
+                        className='mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400'
+                        data-testid={`todo-metadata-${todo.id}`}
+                      >
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(todo.priority)}`}
                           data-testid={`todo-priority-${todo.id}`}
@@ -385,9 +362,7 @@ const Todos = () => {
       )}
 
       {/* Todo Modal */}
-      {showModal && (
-        <TodoModal todo={editingTodo} categories={categories} onClose={handleModalClose} />
-      )}
+      {showModal && <TodoModal todo={editingTodo} categories={categories} onClose={handleModalClose} />}
 
       {/* Delete Confirmation */}
       {showDeleteDialog && (

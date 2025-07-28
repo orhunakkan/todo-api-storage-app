@@ -31,12 +31,12 @@ describe('Todos Routes Integration Tests', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.cleanup();
-    
+
     // Create test user and get token
     const { user, token } = await DatabaseHelper.createTestUser(fixtures.users.valid);
     testUser = user;
     authToken = token;
-    
+
     // Create test category
     testCategory = await DatabaseHelper.createTestCategory(testUser.id, fixtures.categories.valid);
   });
@@ -53,14 +53,11 @@ describe('Todos Routes Integration Tests', () => {
         description: 'Test todo description',
         priority: 'medium',
         due_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        category_id: testCategory.id
+        category_id: testCategory.id,
       };
 
       // Act
-      const response = await request(app)
-        .post('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(todoData);
+      const response = await request(app).post('/api/todos').set('Authorization', `Bearer ${authToken}`).send(todoData);
 
       // Assert
       expect(response.status).toBe(201);
@@ -85,14 +82,11 @@ describe('Todos Routes Integration Tests', () => {
       const todoData = {
         title: 'Uncategorized Todo',
         description: 'Todo without category',
-        priority: 'low'
+        priority: 'low',
       };
 
       // Act
-      const response = await request(app)
-        .post('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(todoData);
+      const response = await request(app).post('/api/todos').set('Authorization', `Bearer ${authToken}`).send(todoData);
 
       // Assert
       expect(response.status).toBe(201);
@@ -102,14 +96,11 @@ describe('Todos Routes Integration Tests', () => {
     it('should return 400 for missing required fields', async () => {
       // Arrange
       const invalidTodoData = {
-        description: 'Missing title'
+        description: 'Missing title',
       };
 
       // Act
-      const response = await request(app)
-        .post('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(invalidTodoData);
+      const response = await request(app).post('/api/todos').set('Authorization', `Bearer ${authToken}`).send(invalidTodoData);
 
       // Assert
       expect(response.status).toBe(400);
@@ -122,9 +113,7 @@ describe('Todos Routes Integration Tests', () => {
       const todoData = fixtures.todos.valid;
 
       // Act
-      const response = await request(app)
-        .post('/api/todos')
-        .send(todoData);
+      const response = await request(app).post('/api/todos').send(todoData);
 
       // Assert
       expect(response.status).toBe(401);
@@ -135,14 +124,11 @@ describe('Todos Routes Integration Tests', () => {
       // Arrange
       const todoData = {
         ...fixtures.todos.valid,
-        category_id: 99999 // Non-existent category
+        category_id: 99999, // Non-existent category
       };
 
       // Act
-      const response = await request(app)
-        .post('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(todoData);
+      const response = await request(app).post('/api/todos').set('Authorization', `Bearer ${authToken}`).send(todoData);
 
       // Assert
       expect(response.status).toBe(400);
@@ -156,20 +142,13 @@ describe('Todos Routes Integration Tests', () => {
       // Create multiple test todos
       const todos = fixtures.todos.multiple;
       for (const todoData of todos) {
-        await DatabaseHelper.createTestTodo(
-          testUser.id,
-          Math.random() > 0.5 ? testCategory.id : null,
-          todoData
-        );
+        await DatabaseHelper.createTestTodo(testUser.id, Math.random() > 0.5 ? testCategory.id : null, todoData);
       }
     });
 
     it('should return paginated todos list', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .query({ limit: 2, offset: 0 });
+      const response = await request(app).get('/api/todos').set('Authorization', `Bearer ${authToken}`).query({ limit: 2, offset: 0 });
 
       // Assert
       expect(response.status).toBe(200);
@@ -190,10 +169,7 @@ describe('Todos Routes Integration Tests', () => {
       }
 
       // Act - Get only incomplete todos
-      const response = await request(app)
-        .get('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .query({ completed: 'false' });
+      const response = await request(app).get('/api/todos').set('Authorization', `Bearer ${authToken}`).query({ completed: 'false' });
 
       // Assert
       expect(response.status).toBe(200);
@@ -205,10 +181,7 @@ describe('Todos Routes Integration Tests', () => {
 
     it('should filter todos by category', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .query({ category_id: testCategory.id });
+      const response = await request(app).get('/api/todos').set('Authorization', `Bearer ${authToken}`).query({ category_id: testCategory.id });
 
       // Assert
       expect(response.status).toBe(200);
@@ -219,10 +192,7 @@ describe('Todos Routes Integration Tests', () => {
 
     it('should search todos by title and description', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`)
-        .query({ search: 'Task' });
+      const response = await request(app).get('/api/todos').set('Authorization', `Bearer ${authToken}`).query({ search: 'Task' });
 
       // Assert
       expect(response.status).toBe(200);
@@ -232,23 +202,21 @@ describe('Todos Routes Integration Tests', () => {
       });
     });
 
-    it('should return only user\'s todos', async () => {
+    it("should return only user's todos", async () => {
       // Arrange - Create another user and their todos
       const { user: otherUser, token: otherToken } = await DatabaseHelper.createTestUser({
         ...fixtures.users.valid,
         username: 'otheruser',
-        email: 'other@example.com'
+        email: 'other@example.com',
       });
-      
+
       await DatabaseHelper.createTestTodo(otherUser.id, null, {
         title: 'Other User Todo',
-        description: 'Should not appear in first user\'s list'
+        description: "Should not appear in first user's list",
       });
 
       // Act
-      const response = await request(app)
-        .get('/api/todos')
-        .set('Authorization', `Bearer ${authToken}`);
+      const response = await request(app).get('/api/todos').set('Authorization', `Bearer ${authToken}`);
 
       // Assert
       expect(response.status).toBe(200);
@@ -262,11 +230,7 @@ describe('Todos Routes Integration Tests', () => {
     let testTodo;
 
     beforeEach(async () => {
-      testTodo = await DatabaseHelper.createTestTodo(
-        testUser.id,
-        testCategory.id,
-        fixtures.todos.valid
-      );
+      testTodo = await DatabaseHelper.createTestTodo(testUser.id, testCategory.id, fixtures.todos.valid);
     });
 
     it('should update todo successfully', async () => {
@@ -275,14 +239,11 @@ describe('Todos Routes Integration Tests', () => {
         title: 'Updated Todo Title',
         description: 'Updated description',
         priority: 'high',
-        completed: true
+        completed: true,
       };
 
       // Act
-      const response = await request(app)
-        .put(`/api/todos/${testTodo.id}`)
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(updateData);
+      const response = await request(app).put(`/api/todos/${testTodo.id}`).set('Authorization', `Bearer ${authToken}`).send(updateData);
 
       // Assert
       expect(response.status).toBe(200);
@@ -300,35 +261,28 @@ describe('Todos Routes Integration Tests', () => {
 
     it('should return 404 for non-existent todo', async () => {
       // Act
-      const response = await request(app)
-        .put('/api/todos/99999')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ title: 'Updated Title' });
+      const response = await request(app).put('/api/todos/99999').set('Authorization', `Bearer ${authToken}`).send({ title: 'Updated Title' });
 
       // Assert
       expect(response.status).toBe(404);
       expect(response.body).toHaveProperty('error', 'Todo not found');
     });
 
-    it('should return 403 when updating other user\'s todo', async () => {
+    it("should return 403 when updating other user's todo", async () => {
       // Arrange - Create another user and their todo
       const { user: otherUser } = await DatabaseHelper.createTestUser({
         ...fixtures.users.valid,
         username: 'otheruser',
-        email: 'other@example.com'
+        email: 'other@example.com',
       });
-      
-      const otherUserTodo = await DatabaseHelper.createTestTodo(
-        otherUser.id,
-        null,
-        fixtures.todos.valid
-      );
+
+      const otherUserTodo = await DatabaseHelper.createTestTodo(otherUser.id, null, fixtures.todos.valid);
 
       // Act
       const response = await request(app)
         .put(`/api/todos/${otherUserTodo.id}`)
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ title: 'Trying to update other user\'s todo' });
+        .send({ title: "Trying to update other user's todo" });
 
       // Assert
       expect(response.status).toBe(403);
@@ -340,18 +294,12 @@ describe('Todos Routes Integration Tests', () => {
     let testTodo;
 
     beforeEach(async () => {
-      testTodo = await DatabaseHelper.createTestTodo(
-        testUser.id,
-        testCategory.id,
-        fixtures.todos.valid
-      );
+      testTodo = await DatabaseHelper.createTestTodo(testUser.id, testCategory.id, fixtures.todos.valid);
     });
 
     it('should delete todo successfully', async () => {
       // Act
-      const response = await request(app)
-        .delete(`/api/todos/${testTodo.id}`)
-        .set('Authorization', `Bearer ${authToken}`);
+      const response = await request(app).delete(`/api/todos/${testTodo.id}`).set('Authorization', `Bearer ${authToken}`);
 
       // Assert
       expect(response.status).toBe(200);
@@ -364,33 +312,25 @@ describe('Todos Routes Integration Tests', () => {
 
     it('should return 404 for non-existent todo', async () => {
       // Act
-      const response = await request(app)
-        .delete('/api/todos/99999')
-        .set('Authorization', `Bearer ${authToken}`);
+      const response = await request(app).delete('/api/todos/99999').set('Authorization', `Bearer ${authToken}`);
 
       // Assert
       expect(response.status).toBe(404);
       expect(response.body).toHaveProperty('error', 'Todo not found');
     });
 
-    it('should return 403 when deleting other user\'s todo', async () => {
+    it("should return 403 when deleting other user's todo", async () => {
       // Arrange - Create another user and their todo
       const { user: otherUser } = await DatabaseHelper.createTestUser({
         ...fixtures.users.valid,
         username: 'otheruser',
-        email: 'other@example.com'
+        email: 'other@example.com',
       });
-      
-      const otherUserTodo = await DatabaseHelper.createTestTodo(
-        otherUser.id,
-        null,
-        fixtures.todos.valid
-      );
+
+      const otherUserTodo = await DatabaseHelper.createTestTodo(otherUser.id, null, fixtures.todos.valid);
 
       // Act
-      const response = await request(app)
-        .delete(`/api/todos/${otherUserTodo.id}`)
-        .set('Authorization', `Bearer ${authToken}`);
+      const response = await request(app).delete(`/api/todos/${otherUserTodo.id}`).set('Authorization', `Bearer ${authToken}`);
 
       // Assert
       expect(response.status).toBe(403);

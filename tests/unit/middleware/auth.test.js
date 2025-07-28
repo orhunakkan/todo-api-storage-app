@@ -6,7 +6,7 @@
 // Mock dependencies first
 jest.mock('jsonwebtoken');
 jest.mock('../../../backend/config/database', () => ({
-  query: jest.fn()
+  query: jest.fn(),
 }));
 
 const { authenticateToken } = require('../../../backend/middleware/auth');
@@ -17,17 +17,17 @@ describe('Auth Middleware Unit Tests', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockReq = {
       headers: {},
-      user: null
+      user: null,
     };
-    
+
     mockRes = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis()
+      json: jest.fn().mockReturnThis(),
     };
-    
+
     mockNext = jest.fn();
   });
 
@@ -76,7 +76,7 @@ describe('Auth Middleware Unit Tests', () => {
       // Arrange
       const mockUser = { id: 1, username: 'testuser', email: 'test@test.com' };
       const mockPool = require('../../../backend/config/database');
-      
+
       mockReq.headers['authorization'] = 'Bearer valid.token.here';
       jwt.verify.mockImplementation((token, secret, callback) => {
         callback(null, { userId: 1 });
@@ -84,7 +84,7 @@ describe('Auth Middleware Unit Tests', () => {
       mockPool.query.mockResolvedValue({ rows: [mockUser] });
 
       // Act
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         mockNext.mockImplementation(resolve);
         authenticateToken(mockReq, mockRes, mockNext);
       });
@@ -98,7 +98,7 @@ describe('Auth Middleware Unit Tests', () => {
     it('should handle database errors gracefully', async () => {
       // Arrange
       const mockPool = require('../../../backend/config/database');
-      
+
       mockReq.headers['authorization'] = 'Bearer valid.token.here';
       jwt.verify.mockImplementation((token, secret, callback) => {
         callback(null, { userId: 1 });
@@ -106,7 +106,7 @@ describe('Auth Middleware Unit Tests', () => {
       mockPool.query.mockRejectedValue(new Error('Database error'));
 
       // Act
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         mockRes.status.mockImplementation(() => {
           resolve();
           return mockRes;

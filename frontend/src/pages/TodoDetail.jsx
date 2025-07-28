@@ -1,18 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import {
-  ArrowLeft,
-  Calendar,
-  User,
-  Tag,
-  Clock,
-  CheckSquare,
-  Square,
-  Edit,
-  Trash2,
-  AlertCircle,
-} from 'lucide-react';
+import { ArrowLeft, Calendar, User, Tag, Clock, CheckSquare, Square, Edit, Trash2, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TodoModal from '../components/TodoModal';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -139,29 +128,33 @@ const TodoDetail = () => {
   }
 
   return (
-    <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid="todo-detail-page">
+    <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8' data-testid='todo-detail-page'>
       {/* Header */}
-      <div className='flex items-center justify-between mb-8' data-testid="todo-detail-header">
+      <div className='flex items-center justify-between mb-8' data-testid='todo-detail-header'>
         <div className='flex items-center'>
           <Link
             to='/todos'
             className='p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 mr-4'
-            data-testid="todo-detail-back-btn"
+            data-testid='todo-detail-back-btn'
           >
             <ArrowLeft className='h-5 w-5' />
           </Link>
-          <div data-testid="todo-detail-header-text">
-            <h1 className='text-2xl font-bold text-gray-900 dark:text-white' data-testid="todo-detail-title">Todo Details</h1>
-            <p className='text-gray-600 dark:text-gray-400' data-testid="todo-detail-subtitle">View and manage todo information</p>
+          <div data-testid='todo-detail-header-text'>
+            <h1 className='text-2xl font-bold text-gray-900 dark:text-white' data-testid='todo-detail-title'>
+              Todo Details
+            </h1>
+            <p className='text-gray-600 dark:text-gray-400' data-testid='todo-detail-subtitle'>
+              View and manage todo information
+            </p>
           </div>
         </div>
 
-        <div className='flex items-center space-x-3' data-testid="todo-detail-actions">
-          <button onClick={() => setShowEditModal(true)} className='btn btn-outline' data-testid="todo-detail-edit-btn">
+        <div className='flex items-center space-x-3' data-testid='todo-detail-actions'>
+          <button onClick={() => setShowEditModal(true)} className='btn btn-outline' data-testid='todo-detail-edit-btn'>
             <Edit className='h-4 w-4 mr-2' />
             Edit
           </button>
-          <button onClick={() => setShowDeleteDialog(true)} className='btn btn-danger' data-testid="todo-detail-delete-btn">
+          <button onClick={() => setShowDeleteDialog(true)} className='btn btn-danger' data-testid='todo-detail-delete-btn'>
             <Trash2 className='h-4 w-4 mr-2' />
             Delete
           </button>
@@ -169,38 +162,33 @@ const TodoDetail = () => {
       </div>
 
       {/* Todo Card */}
-      <div className='card p-8' data-testid="todo-detail-card">
-        <div className='flex items-start justify-between mb-6' data-testid="todo-detail-main">
+      <div className='card p-8' data-testid='todo-detail-card'>
+        <div className='flex items-start justify-between mb-6' data-testid='todo-detail-main'>
           <div className='flex items-start space-x-4 flex-1'>
             <button
               onClick={handleToggleComplete}
               className='mt-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
-              data-testid="todo-detail-toggle-btn"
+              data-testid='todo-detail-toggle-btn'
             >
               {todo.completed ? (
-                <CheckSquare className='h-6 w-6 text-green-600' data-testid="todo-detail-completed-icon" />
+                <CheckSquare className='h-6 w-6 text-green-600' data-testid='todo-detail-completed-icon' />
               ) : (
-                <Square className='h-6 w-6' data-testid="todo-detail-pending-icon" />
+                <Square className='h-6 w-6' data-testid='todo-detail-pending-icon' />
               )}
             </button>
 
-            <div className='flex-1' data-testid="todo-detail-content">
+            <div className='flex-1' data-testid='todo-detail-content'>
               <h2
                 className={`text-2xl font-bold mb-2 ${
-                  todo.completed
-                    ? 'text-gray-500 dark:text-gray-400 line-through'
-                    : 'text-gray-900 dark:text-white'
+                  todo.completed ? 'text-gray-500 dark:text-gray-400 line-through' : 'text-gray-900 dark:text-white'
                 }`}
-                data-testid="todo-detail-todo-title"
+                data-testid='todo-detail-todo-title'
               >
                 {todo.title}
               </h2>
 
-              <div className='flex items-center space-x-4 mb-4' data-testid="todo-detail-metadata">
-                <span
-                  className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(todo.priority)}`}
-                  data-testid="todo-detail-priority"
-                >
+              <div className='flex items-center space-x-4 mb-4' data-testid='todo-detail-metadata'>
+                <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(todo.priority)}`} data-testid='todo-detail-priority'>
                   {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)} Priority
                 </span>
 
@@ -233,9 +221,7 @@ const TodoDetail = () => {
                 <div>
                   <span className='text-sm text-gray-500 dark:text-gray-500'>Created by</span>
                   <p className='font-medium text-gray-900 dark:text-white'>
-                    {todo.first_name && todo.last_name
-                      ? `${todo.first_name} ${todo.last_name}`
-                      : todo.username}
+                    {todo.first_name && todo.last_name ? `${todo.first_name} ${todo.last_name}` : todo.username}
                   </p>
                 </div>
               </div>
@@ -245,9 +231,7 @@ const TodoDetail = () => {
                   <Tag className='h-5 w-5 mr-3' />
                   <div>
                     <span className='text-sm text-gray-500 dark:text-gray-500'>Category</span>
-                    <p className='font-medium text-gray-900 dark:text-white'>
-                      {todo.category_name}
-                    </p>
+                    <p className='font-medium text-gray-900 dark:text-white'>{todo.category_name}</p>
                   </div>
                 </div>
               )}
@@ -257,9 +241,7 @@ const TodoDetail = () => {
                   <Calendar className='h-5 w-5 mr-3' />
                   <div>
                     <span className='text-sm text-gray-500 dark:text-gray-500'>Due date</span>
-                    <p className='font-medium text-gray-900 dark:text-white'>
-                      {formatDate(todo.due_date)}
-                    </p>
+                    <p className='font-medium text-gray-900 dark:text-white'>{formatDate(todo.due_date)}</p>
                   </div>
                 </div>
               )}
@@ -274,9 +256,7 @@ const TodoDetail = () => {
                 <Clock className='h-5 w-5 mr-3' />
                 <div>
                   <span className='text-sm text-gray-500 dark:text-gray-500'>Created</span>
-                  <p className='font-medium text-gray-900 dark:text-white'>
-                    {formatDateTime(todo.created_at)}
-                  </p>
+                  <p className='font-medium text-gray-900 dark:text-white'>{formatDateTime(todo.created_at)}</p>
                 </div>
               </div>
 
@@ -285,9 +265,7 @@ const TodoDetail = () => {
                   <Clock className='h-5 w-5 mr-3' />
                   <div>
                     <span className='text-sm text-gray-500 dark:text-gray-500'>Last updated</span>
-                    <p className='font-medium text-gray-900 dark:text-white'>
-                      {formatDateTime(todo.updated_at)}
-                    </p>
+                    <p className='font-medium text-gray-900 dark:text-white'>{formatDateTime(todo.updated_at)}</p>
                   </div>
                 </div>
               )}
@@ -298,10 +276,7 @@ const TodoDetail = () => {
         {/* Actions */}
         <div className='mt-8 pt-6 border-t border-gray-200 dark:border-gray-700'>
           <div className='flex justify-between items-center'>
-            <button
-              onClick={handleToggleComplete}
-              className={`btn ${todo.completed ? 'btn-outline' : 'btn-primary'}`}
-            >
+            <button onClick={handleToggleComplete} className={`btn ${todo.completed ? 'btn-outline' : 'btn-primary'}`}>
               {todo.completed ? (
                 <>
                   <Square className='h-4 w-4 mr-2' />

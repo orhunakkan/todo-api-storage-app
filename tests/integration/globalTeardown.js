@@ -7,12 +7,12 @@ const DatabaseHelper = require('../helpers/database');
 
 module.exports = async () => {
   console.log('🧹 Cleaning up integration test environment...');
-  
+
   try {
     // Clean up test database
     await DatabaseHelper.cleanup();
     console.log('✅ Test database cleaned up');
-    
+
     // Close any remaining database connections
     if (DatabaseHelper.closeConnections) {
       await DatabaseHelper.closeConnections();

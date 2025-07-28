@@ -7,8 +7,7 @@ const options = {
     info: {
       title: 'Todo API Storage App',
       version: '1.0.0',
-      description:
-        'A comprehensive Todo API with user management, categories, and statistics. Perfect for testing e2e frameworks.',
+      description: 'A comprehensive Todo API with user management, categories, and statistics. Perfect for testing e2e frameworks.',
       contact: {
         name: 'API Support',
         email: 'support@example.com',

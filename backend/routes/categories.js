@@ -207,10 +207,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Check if new name already exists (excluding current category)
     if (name) {
-      const nameCheck = await pool.query('SELECT id FROM categories WHERE name = $1 AND id != $2', [
-        name,
-        id,
-      ]);
+      const nameCheck = await pool.query('SELECT id FROM categories WHERE name = $1 AND id != $2', [name, id]);
 
       if (nameCheck.rows.length > 0) {
         return res.status(409).json({ error: 'Category with this name already exists' });

@@ -8,12 +8,13 @@ const LoadingSpinner = ({ size = 'default', text = 'Loading...' }) => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center p-8' data-testid="loading-spinner">
-      <Loader2
-        className={`${sizeClasses[size]} text-primary-600 dark:text-primary-400 animate-spin`}
-        data-testid="loading-spinner-icon"
-      />
-      {text && <p className='mt-2 text-sm text-gray-600 dark:text-gray-400' data-testid="loading-spinner-text">{text}</p>}
+    <div className='flex flex-col items-center justify-center p-8' data-testid='loading-spinner'>
+      <Loader2 className={`${sizeClasses[size]} text-primary-600 dark:text-primary-400 animate-spin`} data-testid='loading-spinner-icon' />
+      {text && (
+        <p className='mt-2 text-sm text-gray-600 dark:text-gray-400' data-testid='loading-spinner-text'>
+          {text}
+        </p>
+      )}
     </div>
   );
 };

@@ -71,10 +71,10 @@ const Login = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8' data-testid="login-page">
+    <div className='min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8' data-testid='login-page'>
       <div className='max-w-md w-full space-y-8'>
-        <div className='text-center' data-testid="login-header">
-          <h2 className='mt-6 text-3xl font-bold text-gray-900 dark:text-white' data-testid="login-title">
+        <div className='text-center' data-testid='login-header'>
+          <h2 className='mt-6 text-3xl font-bold text-gray-900 dark:text-white' data-testid='login-title'>
             Sign in to your account
           </h2>
           <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
@@ -82,26 +82,29 @@ const Login = () => {
             <Link
               to='/register'
               className='font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors'
-              data-testid="login-register-link"
+              data-testid='login-register-link'
             >
               create a new account
             </Link>
           </p>
         </div>
 
-        <div className='card p-8' data-testid="login-form-container">
-          <form className='space-y-6' onSubmit={handleSubmit} data-testid="login-form">
+        <div className='card p-8' data-testid='login-form-container'>
+          <form className='space-y-6' onSubmit={handleSubmit} data-testid='login-form'>
             {errors.submit && (
-              <div className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50' data-testid="login-error-message">
+              <div
+                className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50'
+                data-testid='login-error-message'
+              >
                 <p className='text-sm text-red-600 dark:text-red-400'>{errors.submit}</p>
               </div>
             )}
 
-            <div data-testid="login-username-field">
+            <div data-testid='login-username-field'>
               <label
                 htmlFor='username'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                data-testid="login-username-label"
+                data-testid='login-username-label'
               >
                 Username or Email
               </label>
@@ -115,18 +118,20 @@ const Login = () => {
                 onChange={handleChange}
                 className={`input ${errors.username ? 'border-red-500 focus:ring-red-500' : ''}`}
                 placeholder='Enter your username or email'
-                data-testid="login-username-input"
+                data-testid='login-username-input'
               />
               {errors.username && (
-                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid="login-username-error">{errors.username}</p>
+                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid='login-username-error'>
+                  {errors.username}
+                </p>
               )}
             </div>
 
-            <div data-testid="login-password-field">
+            <div data-testid='login-password-field'>
               <label
                 htmlFor='password'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
-                data-testid="login-password-label"
+                data-testid='login-password-label'
               >
                 Password
               </label>
@@ -141,23 +146,25 @@ const Login = () => {
                   onChange={handleChange}
                   className={`input pr-10 ${errors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder='Enter your password'
-                  data-testid="login-password-input"
+                  data-testid='login-password-input'
                 />
                 <button
                   type='button'
                   className='absolute inset-y-0 right-0 pr-3 flex items-center'
                   onClick={() => setShowPassword(!showPassword)}
-                  data-testid="login-password-toggle-btn"
+                  data-testid='login-password-toggle-btn'
                 >
                   {showPassword ? (
-                    <EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300' data-testid="login-password-hide-icon" />
+                    <EyeOff className='h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300' data-testid='login-password-hide-icon' />
                   ) : (
-                    <Eye className='h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300' data-testid="login-password-show-icon" />
+                    <Eye className='h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300' data-testid='login-password-show-icon' />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid="login-password-error">{errors.password}</p>
+                <p className='mt-1 text-sm text-red-600 dark:text-red-400' data-testid='login-password-error'>
+                  {errors.password}
+                </p>
               )}
             </div>
 
@@ -166,7 +173,7 @@ const Login = () => {
                 type='submit'
                 disabled={loading}
                 className='w-full flex justify-center items-center btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed'
-                data-testid="login-submit-btn"
+                data-testid='login-submit-btn'
               >
                 {loading ? (
                   <LoadingSpinner size='small' text='' />

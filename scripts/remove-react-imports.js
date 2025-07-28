@@ -12,10 +12,7 @@ files.forEach(filePath => {
   // Remove React import lines
   const newContent = content
     .replace(/^import React from ['"]react['"];\s*\n/gm, '')
-    .replace(
-      /^import React, \{ ([^}]+) \} from ['"]react['"];\s*\n/gm,
-      "import { $1 } from 'react';\n"
-    )
+    .replace(/^import React, \{ ([^}]+) \} from ['"]react['"];\s*\n/gm, "import { $1 } from 'react';\n")
     .replace(/^import React, \* as React from ['"]react['"];\s*\n/gm, '');
 
   if (content !== newContent) {

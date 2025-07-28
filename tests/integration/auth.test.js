@@ -37,9 +37,7 @@ describe('Authentication Routes Integration Tests', () => {
       const userData = fixtures.users.valid;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       // Assert
       expect(response.status).toBe(201);
@@ -64,9 +62,7 @@ describe('Authentication Routes Integration Tests', () => {
       const userData = fixtures.users.invalid.missingUsername;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       // Assert
       expect(response.status).toBe(400);
@@ -79,9 +75,7 @@ describe('Authentication Routes Integration Tests', () => {
       const userData = fixtures.users.invalid.invalidEmail;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       // Assert
       expect(response.status).toBe(400);
@@ -92,16 +86,12 @@ describe('Authentication Routes Integration Tests', () => {
     it('should return 409 for duplicate username', async () => {
       // Arrange
       const userData = fixtures.users.valid;
-      
+
       // Create user first via API
-      await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      await request(app).post('/api/auth/register').send(userData);
 
       // Act - Try to register same user again
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       // Assert
       expect(response.status).toBe(409);
@@ -113,16 +103,12 @@ describe('Authentication Routes Integration Tests', () => {
       // Arrange
       const userData1 = fixtures.users.valid;
       const userData2 = { ...userData1, username: 'differentuser' };
-      
+
       // Create user first via API
-      await request(app)
-        .post('/api/auth/register')
-        .send(userData1);
+      await request(app).post('/api/auth/register').send(userData1);
 
       // Act - Try to register with same email
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData2);
+      const response = await request(app).post('/api/auth/register').send(userData2);
 
       // Assert
       expect(response.status).toBe(409);
@@ -137,9 +123,7 @@ describe('Authentication Routes Integration Tests', () => {
     beforeEach(async () => {
       // Create test user for login tests via API
       const userData = fixtures.users.valid;
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
       createdUser = response.body.user;
     });
 
@@ -147,13 +131,11 @@ describe('Authentication Routes Integration Tests', () => {
       // Arrange
       const loginData = {
         username: createdUser.username,
-        password: fixtures.users.valid.password
+        password: fixtures.users.valid.password,
       };
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData);
+      const response = await request(app).post('/api/auth/login').send(loginData);
 
       // Assert
       expect(response.status).toBe(200);
@@ -169,9 +151,7 @@ describe('Authentication Routes Integration Tests', () => {
       const loginData = fixtures.auth.invalidLogin.wrongPassword;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData);
+      const response = await request(app).post('/api/auth/login').send(loginData);
 
       // Assert
       expect(response.status).toBe(401);
@@ -184,9 +164,7 @@ describe('Authentication Routes Integration Tests', () => {
       const loginData = fixtures.auth.invalidLogin.nonexistentUser;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData);
+      const response = await request(app).post('/api/auth/login').send(loginData);
 
       // Assert
       expect(response.status).toBe(401);
@@ -199,9 +177,7 @@ describe('Authentication Routes Integration Tests', () => {
       const loginData = fixtures.auth.invalidLogin.missingCredentials;
 
       // Act
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData);
+      const response = await request(app).post('/api/auth/login').send(loginData);
 
       // Assert
       expect(response.status).toBe(400);
@@ -217,19 +193,15 @@ describe('Authentication Routes Integration Tests', () => {
     beforeEach(async () => {
       // Create test user and get token via API
       const userData = fixtures.users.valid;
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
-      
+      const response = await request(app).post('/api/auth/register').send(userData);
+
       createdUser = response.body.user;
       userToken = response.body.token;
     });
 
     it('should return user profile with valid token', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/auth/profile')
-        .set('Authorization', `Bearer ${userToken}`);
+      const response = await request(app).get('/api/auth/profile').set('Authorization', `Bearer ${userToken}`);
 
       // Assert
       expect(response.status).toBe(200);
@@ -241,8 +213,7 @@ describe('Authentication Routes Integration Tests', () => {
 
     it('should return 401 without token', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/auth/profile');
+      const response = await request(app).get('/api/auth/profile');
 
       // Assert
       expect(response.status).toBe(401);
@@ -252,9 +223,7 @@ describe('Authentication Routes Integration Tests', () => {
 
     it('should return 403 with invalid token', async () => {
       // Act
-      const response = await request(app)
-        .get('/api/auth/profile')
-        .set('Authorization', 'Bearer invalid-token');
+      const response = await request(app).get('/api/auth/profile').set('Authorization', 'Bearer invalid-token');
 
       // Assert
       expect(response.status).toBe(403);

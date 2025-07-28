@@ -125,10 +125,11 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Check if new username/email already exists (excluding current user)
     if (username || email) {
-      const existingUser = await pool.query(
-        'SELECT id FROM users WHERE (username = $1 OR email = $2) AND id != $3',
-        [username || '', email || '', id]
-      );
+      const existingUser = await pool.query('SELECT id FROM users WHERE (username = $1 OR email = $2) AND id != $3', [
+        username || '',
+        email || '',
+        id,
+      ]);
 
       if (existingUser.rows.length > 0) {
         return res.status(409).json({

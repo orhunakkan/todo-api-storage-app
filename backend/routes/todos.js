@@ -264,10 +264,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     // Validate category exists and belongs to the user if provided
     if (category_id) {
-      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1 AND user_id = $2', [
-        category_id,
-        req.user.id
-      ]);
+      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1 AND user_id = $2', [category_id, req.user.id]);
 
       if (categoryCheck.rows.length === 0) {
         return res.status(400).json({ error: 'Category not found or access denied' });
@@ -516,9 +513,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // Validate category exists if provided
     if (category_id) {
-      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1', [
-        category_id,
-      ]);
+      const categoryCheck = await pool.query('SELECT id FROM categories WHERE id = $1', [category_id]);
 
       if (categoryCheck.rows.length === 0) {
         return res.status(400).json({ error: 'Category not found' });
@@ -611,10 +606,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 
     // Delete the todo
-    const result = await pool.query(
-      'DELETE FROM todos WHERE id = $1 RETURNING *',
-      [id]
-    );
+    const result = await pool.query('DELETE FROM todos WHERE id = $1 RETURNING *', [id]);
 
     res.json({
       message: 'Todo deleted successfully',
@@ -682,9 +674,7 @@ router.patch('/:id/complete', authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: 'Todo not found or you do not have permission to update it' });
+      return res.status(404).json({ error: 'Todo not found or you do not have permission to update it' });
     }
 
     res.json({
@@ -753,9 +743,7 @@ router.patch('/:id/incomplete', authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: 'Todo not found or you do not have permission to update it' });
+      return res.status(404).json({ error: 'Todo not found or you do not have permission to update it' });
     }
 
     res.json({

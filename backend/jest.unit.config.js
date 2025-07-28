@@ -8,7 +8,7 @@ const path = require('path');
 module.exports = {
   // Test environment
   testEnvironment: 'node',
-  
+
   // Display name for this configuration
   displayName: 'Unit Tests',
 
@@ -16,10 +16,7 @@ module.exports = {
   rootDir: path.resolve(__dirname, '..'),
 
   // Test file patterns - only unit tests
-  testMatch: [
-    '<rootDir>/tests/unit/**/*.test.js',
-    '<rootDir>/tests/unit/**/*.spec.js'
-  ],
+  testMatch: ['<rootDir>/tests/unit/**/*.test.js', '<rootDir>/tests/unit/**/*.spec.js'],
 
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
@@ -35,7 +32,7 @@ module.exports = {
     '!**/node_modules/**',
     '!**/coverage/**',
     '!**/tests/**',
-    '!<rootDir>/backend/server.js'
+    '!<rootDir>/backend/server.js',
   ],
 
   // Higher coverage thresholds for unit tests
@@ -44,8 +41,8 @@ module.exports = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
+      statements: 80,
+    },
   },
 
   // Faster timeout for unit tests
@@ -60,14 +57,14 @@ module.exports = {
 
   // Module mocking for isolation
   resetMocks: true,
-  
+
   // Transform configuration
   transform: {
-    '^.+\\.js$': 'babel-jest'
+    '^.+\\.js$': 'babel-jest',
   },
 
   // Module name mapping
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/backend/$1'
-  }
+    '^@/(.*)$': '<rootDir>/backend/$1',
+  },
 };

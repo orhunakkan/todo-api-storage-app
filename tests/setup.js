@@ -26,20 +26,20 @@ global.testUser = {
   email: 'test@example.com',
   password: 'TestPassword123!',
   first_name: 'Test',
-  last_name: 'User'
+  last_name: 'User',
 };
 
 global.testCategory = {
   name: 'Test Category',
   description: 'Test category description',
-  color: '#3B82F6'
+  color: '#3B82F6',
 };
 
 global.testTodo = {
   title: 'Test Todo',
   description: 'Test todo description',
   priority: 'medium',
-  due_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Tomorrow
+  due_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
 };
 
 // Mock console methods in test environment (optional)

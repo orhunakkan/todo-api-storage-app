@@ -11,12 +11,12 @@ jest.mock('../../../backend/middleware/auth', () => ({
     req.user = { id: 1, username: 'testuser' };
     next();
   }),
-  optionalAuth: jest.fn((req, res, next) => next())
+  optionalAuth: jest.fn((req, res, next) => next()),
 }));
 
 // Mock the database
 jest.mock('../../../backend/config/database', () => ({
-  query: jest.fn()
+  query: jest.fn(),
 }));
 
 describe('User Routes Unit Tests', () => {

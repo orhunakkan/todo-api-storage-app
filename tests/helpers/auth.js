@@ -42,7 +42,7 @@ class AuthHelper {
       email: 'test@example.com',
       first_name: 'Test',
       last_name: 'User',
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -56,7 +56,7 @@ class AuthHelper {
       headers: {},
       body: {},
       params: {},
-      query: {}
+      query: {},
     };
   }
 

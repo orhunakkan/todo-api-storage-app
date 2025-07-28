@@ -97,6 +97,7 @@ npm run test:coverage
 Unit tests focus on testing individual functions and modules in isolation.
 
 ### Characteristics:
+
 - **Fast** - Typically < 5 seconds timeout
 - **Isolated** - Heavy use of mocks and stubs
 - **Focused** - Test single responsibility
@@ -136,6 +137,7 @@ describe('DatabaseHelper Unit Tests', () => {
 Integration tests verify that multiple components work together correctly.
 
 ### Characteristics:
+
 - **Realistic** - Uses real database connections
 - **Comprehensive** - Tests complete workflows
 - **Slower** - 15-second timeout for DB operations
@@ -153,10 +155,7 @@ describe('Todos Routes Integration Tests', () => {
   });
 
   it('should create a new todo successfully', async () => {
-    const response = await request(app)
-      .post('/api/todos')
-      .set('Authorization', `Bearer ${authToken}`)
-      .send(todoData);
+    const response = await request(app).post('/api/todos').set('Authorization', `Bearer ${authToken}`).send(todoData);
 
     expect(response.status).toBe(201);
     expect(response.body.todo).toHaveProperty('id');
@@ -184,18 +183,18 @@ module.exports = {
     valid: {
       username: 'testuser',
       email: 'test@example.com',
-      password: 'TestPassword123!'
+      password: 'TestPassword123!',
     },
     invalid: {
-      missingEmail: { username: 'test' }
-    }
+      missingEmail: { username: 'test' },
+    },
   },
   todos: {
     valid: {
       title: 'Test Todo',
-      description: 'Test description'
-    }
-  }
+      description: 'Test description',
+    },
+  },
 };
 ```
 
@@ -231,11 +230,13 @@ TEST_DB_PASSWORD=password
 ### Database Setup
 
 1. **Create Test Database**:
+
    ```sql
    CREATE DATABASE todo_test;
    ```
 
 2. **Run Migrations**:
+
    ```bash
    npm run db:setup
    ```
@@ -263,12 +264,14 @@ tests/e2e/
 ### To Implement E2E Tests:
 
 1. **Install Playwright**:
+
    ```bash
    npm install --save-dev @playwright/test
    npx playwright install
    ```
 
 2. **Add Scripts to package.json**:
+
    ```json
    {
      "test:e2e": "playwright test",
@@ -291,7 +294,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:13
@@ -306,25 +309,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run unit tests
         run: npm run test:unit
-        
+
       - name: Run integration tests
         run: npm run test:integration
         env:
           TEST_DB_HOST: localhost
           TEST_DB_USER: postgres
           TEST_DB_PASSWORD: postgres
-          
+
       - name: Upload coverage
         uses: codecov/codecov-action@v1
 ```
@@ -358,16 +361,19 @@ node --inspect-brk node_modules/.bin/jest --runInBand
 ## Performance Guidelines
 
 ### Unit Tests:
+
 - Should complete in < 5 seconds
 - Mock all external dependencies
 - Use `jest.spyOn()` for monitoring calls
 
 ### Integration Tests:
+
 - Allow up to 15 seconds for database operations
 - Clean database state between tests
 - Use transactions when possible for faster cleanup
 
 ### Coverage Goals:
+
 - Unit tests: 80%+ coverage
 - Integration tests: 70%+ coverage
 - Critical paths: 100% coverage

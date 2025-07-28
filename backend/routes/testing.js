@@ -223,11 +223,7 @@ router.post('/auth/short-token', (req, res) => {
   const { expiresInSeconds = 30 } = req.body;
   const expiry = Math.max(1, Math.min(300, expiresInSeconds)); // 1-300 seconds
 
-  const token = jwt.sign(
-    { userId: 999, username: 'testuser', type: 'short_lived' },
-    process.env.JWT_SECRET,
-    { expiresIn: `${expiry}s` }
-  );
+  const token = jwt.sign({ userId: 999, username: 'testuser', type: 'short_lived' }, process.env.JWT_SECRET, { expiresIn: `${expiry}s` });
 
   res.json({
     message: 'Short-lived token created',
@@ -444,10 +440,7 @@ router.post('/validation/data-types', simulateNetworkIssues, (req, res) => {
   if (arrayField !== undefined && !Array.isArray(arrayField)) {
     errors.push('arrayField must be an array');
   }
-  if (
-    objectField !== undefined &&
-    (typeof objectField !== 'object' || Array.isArray(objectField) || objectField === null)
-  ) {
+  if (objectField !== undefined && (typeof objectField !== 'object' || Array.isArray(objectField) || objectField === null)) {
     errors.push('objectField must be an object');
   }
 
@@ -755,14 +748,8 @@ router.get('/pagination/large-dataset', simulateNetworkIssues, async (req, res) 
     },
     links: {
       self: `/api/testing/pagination/large-dataset?page=${page}&limit=${limit}&total_records=${totalRecords}`,
-      next:
-        page < totalPages
-          ? `/api/testing/pagination/large-dataset?page=${page + 1}&limit=${limit}&total_records=${totalRecords}`
-          : null,
-      prev:
-        page > 1
-          ? `/api/testing/pagination/large-dataset?page=${page - 1}&limit=${limit}&total_records=${totalRecords}`
-          : null,
+      next: page < totalPages ? `/api/testing/pagination/large-dataset?page=${page + 1}&limit=${limit}&total_records=${totalRecords}` : null,
+      prev: page > 1 ? `/api/testing/pagination/large-dataset?page=${page - 1}&limit=${limit}&total_records=${totalRecords}` : null,
     },
   });
 });
@@ -830,12 +817,8 @@ router.get('/pagination/cursor-based', simulateNetworkIssues, (req, res) => {
   }
 
   // Create next/prev cursors
-  const nextCursor =
-    data.length > 0
-      ? Buffer.from(data[data.length - 1].timestamp.toString()).toString('base64')
-      : null;
-  const prevCursor =
-    data.length > 0 ? Buffer.from(data[0].timestamp.toString()).toString('base64') : null;
+  const nextCursor = data.length > 0 ? Buffer.from(data[data.length - 1].timestamp.toString()).toString('base64') : null;
+  const prevCursor = data.length > 0 ? Buffer.from(data[0].timestamp.toString()).toString('base64') : null;
 
   res.json({
     data,
@@ -852,12 +835,8 @@ router.get('/pagination/cursor-based', simulateNetworkIssues, (req, res) => {
       prev: prevCursor,
     },
     links: {
-      next: nextCursor
-        ? `/api/testing/pagination/cursor-based?cursor=${nextCursor}&limit=${limit}&direction=next`
-        : null,
-      prev: prevCursor
-        ? `/api/testing/pagination/cursor-based?cursor=${prevCursor}&limit=${limit}&direction=prev`
-        : null,
+      next: nextCursor ? `/api/testing/pagination/cursor-based?cursor=${nextCursor}&limit=${limit}&direction=next` : null,
+      prev: prevCursor ? `/api/testing/pagination/cursor-based?cursor=${prevCursor}&limit=${limit}&direction=prev` : null,
     },
   });
 });
@@ -965,10 +944,7 @@ router.get('/pagination/inconsistent', simulateNetworkIssues, (req, res) => {
         changing_order: 'Sort order changes between requests',
       }[issueType],
     },
-    warning:
-      issueType !== 'none'
-        ? 'This endpoint simulates pagination issues for testing purposes'
-        : null,
+    warning: issueType !== 'none' ? 'This endpoint simulates pagination issues for testing purposes' : null,
   });
 });
 

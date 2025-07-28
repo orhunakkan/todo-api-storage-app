@@ -7,7 +7,7 @@ const DatabaseHelper = require('../../helpers/database');
 
 // Mock the pool
 jest.mock('../../../backend/config/database', () => ({
-  query: jest.fn()
+  query: jest.fn(),
 }));
 
 describe('DatabaseHelper Unit Tests', () => {

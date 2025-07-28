@@ -16,10 +16,7 @@ function authenticateToken(req, res, next) {
 
     try {
       // Get user from database to ensure they still exist
-      const result = await pool.query(
-        'SELECT id, username, email, first_name, last_name FROM users WHERE id = $1',
-        [decoded.userId]
-      );
+      const result = await pool.query('SELECT id, username, email, first_name, last_name FROM users WHERE id = $1', [decoded.userId]);
 
       if (result.rows.length === 0) {
         return res.status(403).json({ error: 'User not found' });
@@ -51,10 +48,7 @@ function optionalAuth(req, res, next) {
     }
 
     try {
-      const result = await pool.query(
-        'SELECT id, username, email, first_name, last_name FROM users WHERE id = $1',
-        [decoded.userId]
-      );
+      const result = await pool.query('SELECT id, username, email, first_name, last_name FROM users WHERE id = $1', [decoded.userId]);
 
       req.user = result.rows.length > 0 ? result.rows[0] : null;
       next();

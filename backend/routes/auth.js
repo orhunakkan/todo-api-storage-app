@@ -66,10 +66,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await pool.query(
-      'SELECT id FROM users WHERE username = $1 OR email = $2',
-      [username, email]
-    );
+    const existingUser = await pool.query('SELECT id FROM users WHERE username = $1 OR email = $2', [username, email]);
 
     if (existingUser.rows.length > 0) {
       return res.status(409).json({
@@ -165,9 +162,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user by username or email
-    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $1', [
-      username,
-    ]);
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $1', [username]);
 
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -283,11 +278,7 @@ router.get('/profile', authenticateToken, (req, res) => {
 router.post('/refresh', authenticateToken, (req, res) => {
   try {
     // Generate new token
-    const token = jwt.sign(
-      { userId: req.user.id, username: req.user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: req.user.id, username: req.user.username }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     res.json({
       message: 'Token refreshed successfully',

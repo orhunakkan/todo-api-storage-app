@@ -29,7 +29,8 @@ const router = express.Router();
 router.get('/overview', authenticateToken, async (req, res) => {
   try {
     // Get basic counts
-    const stats = await pool.query(`
+    const stats = await pool.query(
+      `
       SELECT 
         (SELECT COUNT(*) FROM users) as total_users,
         (SELECT COUNT(DISTINCT t.category_id) FROM todos t WHERE t.user_id = $1 AND t.category_id IS NOT NULL) as total_categories,
@@ -37,10 +38,13 @@ router.get('/overview', authenticateToken, async (req, res) => {
         (SELECT COUNT(*) FROM todos WHERE completed = true AND user_id = $1) as completed_todos,
         (SELECT COUNT(*) FROM todos WHERE completed = false AND user_id = $1) as pending_todos,
         (SELECT COUNT(*) FROM todos WHERE due_date < CURRENT_TIMESTAMP AND completed = false AND user_id = $1) as overdue_todos
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Get todos by priority
-    const priorityStats = await pool.query(`
+    const priorityStats = await pool.query(
+      `
       SELECT 
         priority,
         COUNT(*) as count,
@@ -55,10 +59,13 @@ router.get('/overview', authenticateToken, async (req, res) => {
           WHEN 'medium' THEN 2 
           WHEN 'low' THEN 3 
         END
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Get recent activity (last 7 days)
-    const recentActivity = await pool.query(`
+    const recentActivity = await pool.query(
+      `
       SELECT 
         DATE(created_at) as date,
         COUNT(*) as todos_created
@@ -67,10 +74,13 @@ router.get('/overview', authenticateToken, async (req, res) => {
         AND user_id = $1
       GROUP BY DATE(created_at)
       ORDER BY date DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Get completion rate by day (last 7 days)
-    const completionRates = await pool.query(`
+    const completionRates = await pool.query(
+      `
       SELECT 
         DATE(updated_at) as date,
         COUNT(*) as todos_completed
@@ -80,10 +90,13 @@ router.get('/overview', authenticateToken, async (req, res) => {
         AND user_id = $1
       GROUP BY DATE(updated_at)
       ORDER BY date DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Get category breakdown for overview (include all user categories and uncategorized todos)
-    const categoryBreakdown = await pool.query(`
+    const categoryBreakdown = await pool.query(
+      `
       SELECT 
         COALESCE(c.name, 'Uncategorized') as category_name,
         COUNT(t.id) as total_todos
@@ -95,7 +108,9 @@ router.get('/overview', authenticateToken, async (req, res) => {
       LEFT JOIN todos t ON t.category_id = c.id AND t.user_id = $1
       GROUP BY c.id, c.name
       ORDER BY total_todos DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     res.json({
       stats: {
@@ -106,14 +121,12 @@ router.get('/overview', authenticateToken, async (req, res) => {
         completed_todos: parseInt(stats.rows[0].completed_todos),
         pending_todos: parseInt(stats.rows[0].pending_todos),
         overdue_todos: parseInt(stats.rows[0].overdue_todos),
-        completion_rate: stats.rows[0].total_todos > 0 
-          ? parseFloat((stats.rows[0].completed_todos / stats.rows[0].total_todos).toFixed(2))
-          : 0,
+        completion_rate: stats.rows[0].total_todos > 0 ? parseFloat((stats.rows[0].completed_todos / stats.rows[0].total_todos).toFixed(2)) : 0,
         todos_by_priority: priorityStats.rows.map(row => ({
           ...row,
           count: parseInt(row.count),
           completed: parseInt(row.completed),
-          pending: parseInt(row.pending)
+          pending: parseInt(row.pending),
         })),
         priority_breakdown: priorityStats.rows.reduce((acc, row) => {
           acc[row.priority] = parseInt(row.count);
@@ -121,15 +134,15 @@ router.get('/overview', authenticateToken, async (req, res) => {
         }, {}),
         category_breakdown: categoryBreakdown.rows.map(row => ({
           category_name: row.category_name,
-          total_todos: parseInt(row.total_todos)
+          total_todos: parseInt(row.total_todos),
         })),
         recent_activity: recentActivity.rows.map(row => ({
           ...row,
-          todos_created: parseInt(row.todos_created)
+          todos_created: parseInt(row.todos_created),
         })),
         completion_rates: completionRates.rows.map(row => ({
           ...row,
-          todos_completed: parseInt(row.todos_completed)
+          todos_completed: parseInt(row.todos_completed),
         })),
       },
       generated_at: new Date().toISOString(),
@@ -349,7 +362,8 @@ router.get('/users', optionalAuth, async (req, res) => {
 router.get('/categories', authenticateToken, async (req, res) => {
   try {
     // Category usage statistics
-    const categoryStats = await pool.query(`
+    const categoryStats = await pool.query(
+      `
       SELECT 
         c.id,
         c.name,
@@ -368,17 +382,23 @@ router.get('/categories', authenticateToken, async (req, res) => {
       LEFT JOIN todos t ON c.id = t.category_id AND t.user_id = $1
       GROUP BY c.id, c.name, c.color, c.created_at
       ORDER BY total_todos DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Uncategorized todos
-    const uncategorizedCount = await pool.query(`
+    const uncategorizedCount = await pool.query(
+      `
       SELECT COUNT(*) as uncategorized_todos
       FROM todos 
       WHERE category_id IS NULL AND user_id = $1
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Category usage trends (last 6 months)
-    const categoryTrends = await pool.query(`
+    const categoryTrends = await pool.query(
+      `
       SELECT 
         c.name as category_name,
         DATE_TRUNC('month', t.created_at) as month,
@@ -389,7 +409,9 @@ router.get('/categories', authenticateToken, async (req, res) => {
         AND t.user_id = $1
       GROUP BY c.id, c.name, DATE_TRUNC('month', t.created_at)
       ORDER BY month DESC, todos_created DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Add uncategorized as a virtual category
     const uncategorizedTodos = parseInt(uncategorizedCount.rows[0].uncategorized_todos);
@@ -401,16 +423,19 @@ router.get('/categories', authenticateToken, async (req, res) => {
       pending_todos: parseInt(row.pending_todos),
       todos_last_30_days: parseInt(row.todos_last_30_days),
       completion_rate: parseFloat(row.completion_rate) ? parseFloat(row.completion_rate) / 100 : 0,
-      unique_users: parseInt(row.unique_users)
+      unique_users: parseInt(row.unique_users),
     }));
 
     // Add uncategorized virtual category if there are uncategorized todos
     if (uncategorizedTodos > 0) {
-      const uncategorizedCompletedCount = await pool.query(`
+      const uncategorizedCompletedCount = await pool.query(
+        `
         SELECT COUNT(*) as completed_count
         FROM todos 
         WHERE category_id IS NULL AND user_id = $1 AND completed = true
-      `, [req.user.id]);
+      `,
+        [req.user.id]
+      );
 
       const completedCount = parseInt(uncategorizedCompletedCount.rows[0].completed_count);
       categories.push({
@@ -422,8 +447,8 @@ router.get('/categories', authenticateToken, async (req, res) => {
         completed_todos: completedCount,
         pending_todos: uncategorizedTodos - completedCount,
         todos_last_30_days: uncategorizedTodos, // Simplified for now
-        completion_rate: uncategorizedTodos > 0 ? parseFloat(((completedCount / uncategorizedTodos)).toFixed(2)) : 0,
-        unique_users: 1
+        completion_rate: uncategorizedTodos > 0 ? parseFloat((completedCount / uncategorizedTodos).toFixed(2)) : 0,
+        unique_users: 1,
       });
     }
 
@@ -432,7 +457,7 @@ router.get('/categories', authenticateToken, async (req, res) => {
       uncategorized_todos: uncategorizedTodos,
       category_trends: categoryTrends.rows.map(row => ({
         ...row,
-        todos_created: parseInt(row.todos_created)
+        todos_created: parseInt(row.todos_created),
       })),
       generated_at: new Date().toISOString(),
     });
@@ -446,20 +471,21 @@ router.get('/categories', authenticateToken, async (req, res) => {
 router.get('/trends', authenticateToken, async (req, res) => {
   try {
     const { period = '7d', granularity = 'daily' } = req.query;
-    
+
     // Validate period parameter
     const validPeriods = ['7d', '30d', '90d'];
     if (!validPeriods.includes(period)) {
-      return res.status(400).json({ 
-        error: 'Invalid period. Must be one of: 7d, 30d, 90d' 
+      return res.status(400).json({
+        error: 'Invalid period. Must be one of: 7d, 30d, 90d',
       });
     }
 
     // Calculate date range
     const days = parseInt(period.replace('d', ''));
     const dateFormat = granularity === 'weekly' ? 'week' : 'day';
-    
-    const trends = await pool.query(`
+
+    const trends = await pool.query(
+      `
       SELECT 
         DATE_TRUNC('${dateFormat}', created_at) as date,
         COUNT(*) as created_count,
@@ -470,13 +496,15 @@ router.get('/trends', authenticateToken, async (req, res) => {
       GROUP BY DATE_TRUNC('${dateFormat}', created_at)
       ORDER BY date DESC
       LIMIT ${granularity === 'weekly' ? Math.ceil(days / 7) : days}
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     res.json({
       trends: trends.rows.map(row => ({
         ...row,
         created_count: parseInt(row.created_count),
-        completed_count: parseInt(row.completed_count)
+        completed_count: parseInt(row.completed_count),
       })),
       period,
       granularity,
@@ -492,15 +520,19 @@ router.get('/trends', authenticateToken, async (req, res) => {
 router.get('/productivity', authenticateToken, async (req, res) => {
   try {
     // Average completion time for completed todos
-    const completionTime = await pool.query(`
+    const completionTime = await pool.query(
+      `
       SELECT 
         AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600) as avg_completion_time_hours
       FROM todos 
       WHERE completed = true AND user_id = $1
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Daily productivity metrics
-    const dailyProductivity = await pool.query(`
+    const dailyProductivity = await pool.query(
+      `
       SELECT 
         DATE(created_at) as date,
         COUNT(*) as todos_created,
@@ -514,20 +546,26 @@ router.get('/productivity', authenticateToken, async (req, res) => {
         AND user_id = $1
       GROUP BY DATE(created_at)
       ORDER BY date DESC
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Calculate productivity score (based on completion rate and consistency)
-    const overallStats = await pool.query(`
+    const overallStats = await pool.query(
+      `
       SELECT 
         COUNT(*) as total_todos,
         COUNT(*) FILTER (WHERE completed = true) as completed_todos,
         COUNT(*) FILTER (WHERE due_date < CURRENT_TIMESTAMP AND completed = false) as overdue_todos
       FROM todos
       WHERE user_id = $1
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Best performing category
-    const bestCategory = await pool.query(`
+    const bestCategory = await pool.query(
+      `
       SELECT 
         c.name as category_name,
         COUNT(t.id) as total_todos,
@@ -543,10 +581,13 @@ router.get('/productivity', authenticateToken, async (req, res) => {
       HAVING COUNT(t.id) >= 2
       ORDER BY completion_rate DESC, total_todos DESC
       LIMIT 1
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Current streak (consecutive days with completed todos)
-    const streakData = await pool.query(`
+    const streakData = await pool.query(
+      `
       WITH daily_completions AS (
         SELECT DATE(updated_at) as completion_date
         FROM todos 
@@ -569,10 +610,13 @@ router.get('/productivity', authenticateToken, async (req, res) => {
         FROM streak_calc 
         LIMIT 1
       )
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     // Longest streak (all time)
-    const longestStreakData = await pool.query(`
+    const longestStreakData = await pool.query(
+      `
       WITH daily_completions AS (
         SELECT DATE(updated_at) as completion_date
         FROM todos 
@@ -594,14 +638,16 @@ router.get('/productivity', authenticateToken, async (req, res) => {
       )
       SELECT COALESCE(MAX(streak_length), 0) as longest_streak_days
       FROM streak_lengths
-    `, [req.user.id]);
+    `,
+      [req.user.id]
+    );
 
     const stats = overallStats.rows[0];
-    const completionRate = stats.total_todos > 0 ? (parseInt(stats.completed_todos) / parseInt(stats.total_todos)) : 0;
-    const overdueRate = stats.total_todos > 0 ? (parseInt(stats.overdue_todos) / parseInt(stats.total_todos)) : 0;
-    
+    const completionRate = stats.total_todos > 0 ? parseInt(stats.completed_todos) / parseInt(stats.total_todos) : 0;
+    const overdueRate = stats.total_todos > 0 ? parseInt(stats.overdue_todos) / parseInt(stats.total_todos) : 0;
+
     // Productivity score: 70% completion rate + 30% on-time performance
-    const productivityScore = Math.round((completionRate * 70) + ((1 - overdueRate) * 30));
+    const productivityScore = Math.round(completionRate * 70 + (1 - overdueRate) * 30);
 
     res.json({
       productivity: {
@@ -616,7 +662,7 @@ router.get('/productivity', authenticateToken, async (req, res) => {
           ...row,
           todos_created: parseInt(row.todos_created),
           todos_completed: parseInt(row.todos_completed),
-          daily_completion_rate: parseFloat(row.daily_completion_rate)
+          daily_completion_rate: parseFloat(row.daily_completion_rate),
         })),
       },
       generated_at: new Date().toISOString(),
