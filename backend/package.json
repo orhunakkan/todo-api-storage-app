@@ -14,7 +14,7 @@
     "db:verify": "node scripts/verify-db.js",
     "test": "jest",
     "test:unit": "jest --config=jest.unit.config.js",
-    "test:integration": "cd .. && npx jest tests/integration --testTimeout=15000",
+    "test:integration": "cd .. && npx jest --config=backend/jest.integration.config.js",
     "test:watch": "jest --watch",
     "test:watch:unit": "jest --config=jest.unit.config.js --watch",
     "test:watch:integration": "jest --config=jest.integration.config.js --watch",
